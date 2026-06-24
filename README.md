@@ -104,7 +104,7 @@ npm run dev
 ---
 
 ## 📸 Platform Sneak Peek
-*(Add your live application screenshots here by replacing the placeholder images!)*
+
 
 | Discover Events | Interactive Seat Map |
 | :---: | :---: |
