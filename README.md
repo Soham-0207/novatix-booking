@@ -108,7 +108,7 @@ npm run dev
 
 | Discover Events | Interactive Seat Map |
 | :---: | :---: |
-| <img src="https://via.placeholder.com/600x350/1a1a2e/ffffff?text=Event+Discovery+Dashboard" width="400"/> | <img src="https://via.placeholder.com/600x350/1a1a2e/ffffff?text=Live+Seat+Selection" width="400"/> |
+| <img src="./frontend/public/home-screenshot.png" alt="Discover Events" width="400"/> | <img src="https://via.placeholder.com/600x350/1a1a2e/ffffff?text=Live+Seat+Selection" alt="Live Seat Selection" width="400"/> |
 
 ---
 
