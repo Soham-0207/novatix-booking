@@ -28,18 +28,32 @@ const EventList = ({ events, onSelectEvent, loading }) => {
     return matchesSearch && matchesCategory;
   });
 
-  if (sortOrder === 'price-asc') {
-    filteredEvents.sort((a, b) => parseFloat(a.ticket_price) - parseFloat(b.ticket_price));
-  } else if (sortOrder === 'price-desc') {
-    filteredEvents.sort((a, b) => parseFloat(b.ticket_price) - parseFloat(a.ticket_price));
-  } else {
-    // Sort by popularity (most tickets sold)
-    filteredEvents.sort((a, b) => {
+  const nowForSort = new Date();
+  const getIsPast = (dateStr) => {
+    const d = new Date(dateStr);
+    return d < nowForSort && d.toDateString() !== nowForSort.toDateString();
+  };
+
+  filteredEvents.sort((a, b) => {
+    const pastA = getIsPast(a.date) ? 1 : 0;
+    const pastB = getIsPast(b.date) ? 1 : 0;
+    
+    // Always put past events at the end
+    if (pastA !== pastB) {
+      return pastA - pastB;
+    }
+
+    if (sortOrder === 'price-asc') {
+      return parseFloat(a.ticket_price) - parseFloat(b.ticket_price);
+    } else if (sortOrder === 'price-desc') {
+      return parseFloat(b.ticket_price) - parseFloat(a.ticket_price);
+    } else {
+      // Sort by popularity (most tickets sold)
       const soldA = parseInt(a.total_seats) - parseInt(a.available_seats);
       const soldB = parseInt(b.total_seats) - parseInt(b.available_seats);
       return soldB - soldA;
-    });
-  }
+    }
+  });
 
   const formatDate = (dateString, timezone = 'UTC') => {
     const options = { 
@@ -173,9 +187,6 @@ const EventList = ({ events, onSelectEvent, loading }) => {
             
             // Check if event is in the past (yesterday or older)
             const isPast = eventDate < now && eventDate.toDateString() !== now.toDateString();
-            
-            // Hide past events entirely!
-            if (isPast) return null;
 
             const isToday = eventDate.toDateString() === now.toDateString();
             const isSoldOut = parseInt(event.available_seats) === 0;
@@ -218,7 +229,19 @@ const EventList = ({ events, onSelectEvent, loading }) => {
                     display: 'flex',
                     gap: '0.5rem',
                   }}>
-                    {isToday ? (
+                    {isPast ? (
+                      <span style={{
+                        background: 'rgba(107, 114, 128, 0.9)', // Gray for Finished
+                        color: 'white',
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        fontWeight: '700',
+                        textTransform: 'uppercase',
+                      }}>
+                        Finished
+                      </span>
+                    ) : isToday ? (
                       <span style={{
                         background: 'rgba(239, 68, 68, 0.9)', // Red for Live
                         color: 'white',
@@ -377,14 +400,15 @@ const EventList = ({ events, onSelectEvent, loading }) => {
 
                     <button 
                       className="btn-primary" 
-                      disabled={isSoldOut}
+                      disabled={isPast || isSoldOut}
                       style={{
                         padding: '0.5rem 1.2rem',
                         fontSize: '0.85rem',
                         borderRadius: 'var(--radius-sm)',
+                        opacity: isPast ? 0.6 : 1,
                       }}
                     >
-                      {isSoldOut ? 'Sold Out' : 'Select Seats'}
+                      {isPast ? 'Ended' : isSoldOut ? 'Sold Out' : 'Select Seats'}
                     </button>
                   </div>
                 </div>
