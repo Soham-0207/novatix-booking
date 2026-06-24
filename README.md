@@ -113,5 +113,6 @@ npm run dev
 ---
 
 <div align="center">
-  Built with ❤️ by Soham
+  <b>Designed and Developed by Soham</b><br>
+  <i>Powering Next-Generation Event Experiences</i>
 </div>
