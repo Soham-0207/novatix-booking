@@ -1,0 +1,88 @@
+import nodemailer from 'nodemailer';
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.MAIL_USER,
+    pass: process.env.MAIL_PASS
+  }
+});
+
+export const sendPasswordResetEmail = async (toEmail, resetToken) => {
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const resetUrl = `${frontendUrl}/?reset=${resetToken}`;
+
+  const mailOptions = {
+    from: `"NovaTix Booking" <${process.env.MAIL_USER}>`,
+    to: toEmail,
+    subject: 'Password Reset Request - NovaTix',
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+        <h2 style="color: #6366f1;">NovaTix Password Reset</h2>
+        <p>Hello,</p>
+        <p>We received a request to reset your password for your NovaTix account.</p>
+        <p>Click the button below to set a new password. This link will expire in 1 hour.</p>
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetUrl}" style="background-color: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block;">
+            Reset Password
+          </a>
+        </div>
+        <p>If the button doesn't work, copy and paste this link into your browser:</p>
+        <p style="word-break: break-all; color: #6b7280; font-size: 0.9em;">
+          <a href="${resetUrl}">${resetUrl}</a>
+        </p>
+        <p style="margin-top: 30px; font-size: 0.85em; color: #9ca3af;">
+          If you didn't request a password reset, you can safely ignore this email.
+        </p>
+      </div>
+    `
+  };
+
+  return transporter.sendMail(mailOptions);
+};
+
+export const sendEventReminderEmail = async (toEmail, userName, eventTitle, eventDateFormatted, venue, type) => {
+  const is24h = type === '24h';
+  const subjectStr = is24h 
+    ? `Reminder: ${eventTitle} is tomorrow!` 
+    : `Reminder: ${eventTitle} starts in 1 hour!`;
+
+  const timeText = is24h ? 'tomorrow' : 'in exactly 1 hour';
+
+  const mailOptions = {
+    from: `"NovaTix Booking" <${process.env.MAIL_USER}>`,
+    to: toEmail,
+    subject: subjectStr,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9fafb;">
+        <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+          <h1 style="color: #6366f1; margin: 0;">NovaTix</h1>
+          <p style="color: #6b7280; font-size: 0.9rem; margin-top: 5px;">Your Event Reminder</p>
+        </div>
+        
+        <div style="padding: 20px 0;">
+          <h2 style="color: #1f2937; margin-top: 0;">Hi ${userName},</h2>
+          <p style="color: #4b5563; font-size: 1.05rem;">
+            Get ready! Your upcoming event <strong>${eventTitle}</strong> is happening ${timeText}.
+          </p>
+          
+          <div style="background-color: white; border-radius: 8px; padding: 20px; margin: 25px 0; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <h3 style="margin-top: 0; color: #111827;">Event Details</h3>
+            <p style="margin: 10px 0; color: #4b5563;">📅 <strong>When:</strong> ${eventDateFormatted}</p>
+            <p style="margin: 10px 0; color: #4b5563;">📍 <strong>Where:</strong> ${venue}</p>
+          </div>
+          
+          <p style="color: #4b5563;">
+            Please ensure you have your booking confirmation ready at the venue. Enjoy the event!
+          </p>
+        </div>
+        
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #eee; color: #9ca3af; font-size: 0.8rem;">
+          <p>Thank you for booking with NovaTix!</p>
+        </div>
+      </div>
+    `
+  };
+
+  return transporter.sendMail(mailOptions);
+};
