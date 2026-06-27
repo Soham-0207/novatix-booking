@@ -28,8 +28,8 @@ router.post('/', optionalAuth, async (req, res) => {
   try {
     const messageId = crypto.randomUUID();
     await pool.query(
-      'INSERT INTO contact_messages (id, user_id, name, email, subject, message, is_replied) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [messageId, userId, name, email, subject, message, true]
+      'INSERT INTO contact_messages (id, user_id, name, email, subject, message) VALUES (?, ?, ?, ?, ?, ?)',
+      [messageId, userId, name, email, subject, message]
     );
 
     // Try to send an instant AI response, but don't crash if it fails
@@ -56,7 +56,6 @@ Please draft a polite, professional, and helpful response to this customer. Addr
     } catch (aiError) {
       console.error('Failed to send instant AI response:', aiError);
       // We still want to return a 201 success even if the AI fails
-      await pool.query('UPDATE contact_messages SET is_replied = FALSE WHERE id = ?', [messageId]);
     }
 
     res.status(201).json({ message: 'Your message has been received. Our team will get back to you shortly!' });
