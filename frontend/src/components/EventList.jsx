@@ -93,9 +93,9 @@ const EventList = ({ events, onSelectEvent, loading }) => {
           marginBottom: '2rem',
         }}
       >
-        <div>
-          <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Upcoming Events</h1>
-          <p style={{ color: 'var(--text-muted)' }}>Discover and book tickets to the most anticipated live events.</p>
+        <div style={{ flex: '1', minWidth: '250px' }}>
+          <h1 style={{ fontSize: '2.5rem', marginBottom: '0.5rem' }}>Discover Events</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Discover and book tickets to the most anticipated live events.</p>
         </div>
 
         <div 
