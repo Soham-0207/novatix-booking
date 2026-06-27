@@ -159,6 +159,18 @@ async function initializeDatabase() {
     } else {
       console.log('Database tables already exist. Skipping initialization.');
     }
+    
+    // Add is_replied column to contact_messages if it doesn't exist (safe alter)
+    try {
+      await pool.query('ALTER TABLE contact_messages ADD COLUMN is_replied BOOLEAN DEFAULT FALSE');
+      console.log('Added is_replied column to contact_messages.');
+    } catch (alterErr) {
+      if (alterErr.code === 'ER_DUP_FIELDNAME') {
+        // Column already exists, all good
+      } else {
+        console.error('Error altering contact_messages:', alterErr.message);
+      }
+    }
   } catch (err) {
     console.error('Error checking/initializing database:', err);
   }
