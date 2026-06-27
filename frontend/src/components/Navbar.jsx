@@ -41,7 +41,7 @@ const Navbar = ({ user, onLogout, setView, view, openAuthModal }) => {
           width: '40px',
           height: '40px',
         }}>
-          <img src="/logo.png" alt="NovaTix Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'screen', filter: 'contrast(1.2) brightness(0.9)' }} />
+          <img src="/logo.png" alt="NovaTix Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         <span 
           className="gradient-text" 
