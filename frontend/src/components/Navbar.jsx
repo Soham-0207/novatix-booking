@@ -38,13 +38,10 @@ const Navbar = ({ user, onLogout, setView, view, openAuthModal }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          width: '36px',
-          height: '36px',
-          overflow: 'hidden',
-          borderRadius: 'var(--radius-sm)',
-          background: 'rgba(255, 255, 255, 0.05)',
+          width: '40px',
+          height: '40px',
         }}>
-          <img src="/logo.png" alt="NovaTix Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <img src="/logo.png" alt="NovaTix Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', mixBlendMode: 'screen' }} />
         </div>
         <span 
           className="gradient-text" 
