@@ -1,8 +1,10 @@
 import express from 'express';
 import pool from '../config/db.js';
-import { sendEventReminderEmail } from '../utils/email.js';
+import { sendEventReminderEmail, sendContactAutoResponseEmail } from '../utils/email.js';
+import Groq from 'groq-sdk';
 
 const router = express.Router();
+
 
 router.get('/reminders', async (req, res) => {
   try {
@@ -87,6 +89,63 @@ router.get('/reminders', async (req, res) => {
   } catch (error) {
     console.error('Cron Error:', error);
     res.status(500).json({ message: 'Internal server error during cron execution' });
+  }
+});
+
+router.get('/process-contact', async (req, res) => {
+  try {
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    
+    // Find messages older than 5 minutes that haven't been replied to
+    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+    
+    const [messages] = await pool.query(`
+      SELECT id, name, email, subject, message, created_at 
+      FROM contact_messages 
+      WHERE is_replied = FALSE AND created_at <= ?
+    `, [fiveMinutesAgo]);
+
+    let processedCount = 0;
+
+    for (let msg of messages) {
+      try {
+        // Generate AI Response
+        const prompt = `You are a helpful customer support assistant for NovaTix, an event ticketing platform.
+A customer named ${msg.name} has submitted the following message via the contact form:
+Subject: ${msg.subject}
+Message: ${msg.message}
+
+Please draft a polite, professional, and helpful response to this customer. Address them by their name. Do not include subject lines or "Dear Customer", just start with the body of the response formatted in HTML (use <p>, <ul>, etc. where appropriate). Keep it concise and relevant.`;
+
+        const chatCompletion = await groq.chat.completions.create({
+          messages: [{ role: 'user', content: prompt }],
+          model: 'llama3-8b-8192',
+        });
+
+        const aiResponseHtml = chatCompletion.choices[0]?.message?.content || "<p>Thank you for reaching out to us. We have received your message and our team is looking into it.</p>";
+
+        // Send email
+        await sendContactAutoResponseEmail(msg.email, msg.name, msg.subject, aiResponseHtml);
+        
+        // Mark as replied
+        await pool.query('UPDATE contact_messages SET is_replied = TRUE WHERE id = ?', [msg.id]);
+        
+        processedCount++;
+        console.log(`Processed and replied to contact message from ${msg.email}`);
+      } catch (err) {
+        console.error(`Failed to process message ${msg.id}:`, err);
+      }
+    }
+
+    res.json({ 
+      success: true, 
+      message: 'Contact processing cron finished',
+      processed: processedCount
+    });
+
+  } catch (error) {
+    console.error('Contact Processing Error:', error);
+    res.status(500).json({ message: 'Internal server error during contact processing' });
   }
 });
 

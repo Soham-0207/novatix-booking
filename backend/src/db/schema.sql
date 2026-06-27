@@ -61,3 +61,16 @@ CREATE TABLE booking_seats (
     FOREIGN KEY (booking_id) REFERENCES bookings(id) ON DELETE CASCADE,
     FOREIGN KEY (seat_id) REFERENCES seats(id) ON DELETE CASCADE
 );
+
+-- Contact Messages Table
+CREATE TABLE IF NOT EXISTS contact_messages (
+    id VARCHAR(36) PRIMARY KEY,
+    user_id VARCHAR(36),
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    subject VARCHAR(150) NOT NULL,
+    message TEXT NOT NULL,
+    is_replied BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
