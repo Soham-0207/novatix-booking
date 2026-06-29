@@ -143,4 +143,21 @@ router.post('/', async (req, res) => {
   }
 });
 
+// Delete an event by ID
+router.delete('/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+    await connection.query('DELETE FROM seats WHERE event_id = ?', [id]);
+    await connection.query('DELETE FROM events WHERE id = ?', [id]);
+    await connection.commit();
+    connection.release();
+    res.json({ message: 'Event deleted successfully.' });
+  } catch (err) {
+    console.error('Error deleting event:', err);
+    res.status(500).json({ error: 'Server error deleting event.' });
+  }
+});
+
 export default router;
