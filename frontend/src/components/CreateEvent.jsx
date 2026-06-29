@@ -107,14 +107,14 @@ const CreateEvent = () => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
             <div className="form-group">
               <label>Event Title</label>
-              <input type="text" name="title" value={formData.title} onChange={handleChange} required placeholder="e.g., Summer Music Festival" />
+              <input className="form-input" type="text" name="title" value={formData.title} onChange={handleChange} required placeholder="e.g., Summer Music Festival" />
             </div>
             
             <div className="form-group">
               <label>Category</label>
               <div className="input-with-icon">
                 <Tag size={18} className="input-icon" />
-                <select name="category" value={formData.category} onChange={handleChange} required style={{ paddingLeft: '2.5rem' }}>
+                <select className="form-input" name="category" value={formData.category} onChange={handleChange} required style={{ paddingLeft: '2.5rem' }}>
                   <option>Music</option>
                   <option>Technology</option>
                   <option>Arts & Culture</option>
@@ -130,23 +130,23 @@ const CreateEvent = () => {
 
           <div className="form-group">
             <label>Description</label>
-            <textarea name="description" value={formData.description} onChange={handleChange} rows="3" required placeholder="Tell attendees what to expect..."></textarea>
+            <textarea className="form-input" name="description" value={formData.description} onChange={handleChange} rows="3" required placeholder="Tell attendees what to expect..."></textarea>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
             <div className="form-group">
               <label>Date</label>
-              <input type="date" name="date" value={formData.date} onChange={handleChange} required />
+              <input className="form-input" type="date" name="date" value={formData.date} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Time</label>
-              <input type="time" name="time" value={formData.time} onChange={handleChange} required />
+              <input className="form-input" type="time" name="time" value={formData.time} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Duration (Hours)</label>
               <div className="input-with-icon">
                 <Clock size={18} className="input-icon" />
-                <input type="number" name="duration_hours" value={formData.duration_hours} onChange={handleChange} required min="1" max="24" style={{ paddingLeft: '2.5rem' }} />
+                <input className="form-input" type="number" name="duration_hours" value={formData.duration_hours} onChange={handleChange} required min="1" max="24" style={{ paddingLeft: '2.5rem' }} />
               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@ const CreateEvent = () => {
             <label>Venue / Address</label>
             <div className="input-with-icon">
               <MapPin size={18} className="input-icon" />
-              <input type="text" name="venue" value={formData.venue} onChange={handleChange} required placeholder="e.g., Central Park Amphitheater, NY" style={{ paddingLeft: '2.5rem' }} />
+              <input className="form-input" type="text" name="venue" value={formData.venue} onChange={handleChange} required placeholder="e.g., Central Park Amphitheater, NY" style={{ paddingLeft: '2.5rem' }} />
             </div>
           </div>
 
@@ -164,7 +164,7 @@ const CreateEvent = () => {
               <label>Total Seats Available</label>
               <div className="input-with-icon">
                 <Users size={18} className="input-icon" />
-                <input type="number" name="total_seats" value={formData.total_seats} onChange={handleChange} required min="10" max="1000" style={{ paddingLeft: '2.5rem' }} />
+                <input className="form-input" type="number" name="total_seats" value={formData.total_seats} onChange={handleChange} required min="10" max="1000" style={{ paddingLeft: '2.5rem' }} />
               </div>
             </div>
             
@@ -172,7 +172,7 @@ const CreateEvent = () => {
               <label>Ticket Price (₹)</label>
               <div className="input-with-icon">
                 <DollarSign size={18} className="input-icon" />
-                <input type="number" name="ticket_price" value={formData.ticket_price} onChange={handleChange} required min="0" step="0.01" style={{ paddingLeft: '2.5rem' }} />
+                <input className="form-input" type="number" name="ticket_price" value={formData.ticket_price} onChange={handleChange} required min="0" step="0.01" style={{ paddingLeft: '2.5rem' }} />
               </div>
             </div>
           </div>
