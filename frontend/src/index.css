@@ -190,6 +190,12 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 0 4px var(--primary-glow);
 }
 
+/* Fix dropdown options being white-on-white in some browsers */
+.form-input option {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
 .input-with-icon {
   position: relative;
   display: flex;
