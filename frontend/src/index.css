@@ -1,5 +1,6 @@
 /* Core Design System & Tokens */
 :root {
+  color-scheme: dark;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
   --font-display: 'Outfit', system-ui, -apple-system, sans-serif;
 
@@ -190,9 +191,8 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 0 4px var(--primary-glow);
 }
 
-/* Fix dropdown options being white-on-white in some browsers */
-.form-input option {
-  background-color: var(--bg-card);
+option {
+  background: var(--bg-card);
   color: var(--text-main);
 }
 
