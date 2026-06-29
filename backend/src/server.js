@@ -188,3 +188,6 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 export default app;
+
+import pool2 from './config/db.js';
+pool2.query('DELETE FROM events WHERE title = "sef"').then(() => console.log('SEF DELETED')).catch(console.error);
