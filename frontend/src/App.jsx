@@ -10,6 +10,7 @@ import ReviewSection from './components/ReviewSection.jsx';
 import AboutPage from './components/AboutPage.jsx';
 import FooterPages from './components/FooterPages.jsx';
 import Footer from './components/Footer.jsx';
+import CreateEvent from './components/CreateEvent.jsx';
 import confetti from 'canvas-confetti';
 import { AlertCircle, CheckCircle2, Info, MapPin, Hourglass } from 'lucide-react';
 
@@ -361,6 +362,8 @@ const App = () => {
           <ContactPage token={token} user={user} />
         ) : view === 'about' ? (
           <AboutPage />
+        ) : view === 'create-event' ? (
+          <CreateEvent />
         ) : ['features', 'pricing', 'security', 'roadmap', 'careers', 'blog', 'documentation', 'api-reference', 'community', 'privacy-policy', 'terms-of-service', 'cookie-policy'].includes(view) ? (
           <FooterPages view={view} />
         ) : view === 'my-bookings' ? (

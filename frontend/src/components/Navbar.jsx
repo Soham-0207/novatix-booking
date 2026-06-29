@@ -73,6 +73,23 @@ const Navbar = ({ user, onLogout, setView, view, openAuthModal }) => {
           Events
         </button>
 
+        <button
+          className="hide-on-mobile"
+          onClick={() => handleLinkClick('create-event')}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: view === 'create-event' ? 'var(--primary)' : 'var(--text-muted)',
+            fontWeight: view === 'create-event' ? '600' : '400',
+            cursor: 'pointer',
+            fontSize: '0.95rem',
+            transition: 'var(--transition)',
+            marginLeft: '0.5rem',
+          }}
+        >
+          Host an Event
+        </button>
+
         <div className="nav-divider" style={{
           height: '20px',
           width: '1px',
@@ -214,6 +231,25 @@ const Navbar = ({ user, onLogout, setView, view, openAuthModal }) => {
             >
               <Calendar size={18} />
               Events
+            </button>
+
+            <button
+              onClick={() => handleLinkClick('create-event')}
+              style={{
+                background: 'none',
+                border: 'none',
+                color: view === 'create-event' ? 'var(--primary)' : 'var(--text-main)',
+                fontWeight: view === 'create-event' ? '600' : '500',
+                cursor: 'pointer',
+                fontSize: '0.95rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                marginTop: '0.5rem'
+              }}
+            >
+              <Ticket size={18} />
+              Host an Event
             </button>
 
             {user ? (
