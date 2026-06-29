@@ -171,6 +171,16 @@ async function initializeDatabase() {
         console.error('Error altering contact_messages:', alterErr.message);
       }
     }
+
+    // Add currency column to events if it doesn't exist
+    try {
+      await pool.query('ALTER TABLE events ADD COLUMN currency VARCHAR(10) DEFAULT "₹"');
+      console.log('Added currency column to events.');
+    } catch (alterErr) {
+      if (alterErr.code !== 'ER_DUP_FIELDNAME') {
+        console.error('Error altering events:', alterErr.message);
+      }
+    }
   } catch (err) {
     console.error('Error checking/initializing database:', err);
   }

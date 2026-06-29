@@ -89,7 +89,7 @@ router.get('/:id/seats', async (req, res) => {
 
 // Create a new event and automatically generate its seats
 router.post('/', async (req, res) => {
-  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category } = req.body;
+  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency } = req.body;
 
   if (!title || !date || !venue || !total_seats || !ticket_price) {
     return res.status(400).json({ error: 'Missing required fields.' });
@@ -112,8 +112,8 @@ router.post('/', async (req, res) => {
     const img = placeholders[Math.floor(Math.random() * placeholders.length)];
 
     await connection.query(
-      'INSERT INTO events (id, title, description, date, duration_hours, venue, total_seats, ticket_price, image_url, category) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [eventId, title, description, date, duration_hours || 2, venue, total_seats, ticket_price, img, category || 'Uncategorized']
+      'INSERT INTO events (id, title, description, date, duration_hours, venue, total_seats, ticket_price, image_url, category, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [eventId, title, description, date, duration_hours || 2, venue, total_seats, ticket_price, img, category || 'Uncategorized', currency || '₹']
     );
 
     // Seed seats for event (Rows A-Z, 1-10 columns)

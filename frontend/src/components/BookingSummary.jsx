@@ -24,6 +24,7 @@ const BookingSummary = ({
 
   const ticketPrice = parseFloat(event.ticket_price);
   const totalAmount = ticketPrice * selectedSeats.length;
+  const currency = event.currency || '₹';
 
   // Real-time Countdown Timer for Redis lock
   useEffect(() => {
@@ -126,14 +127,14 @@ const BookingSummary = ({
           {selectedSeats.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '0.75rem' }}>
               <span style={{ fontSize: '0.95rem', color: 'var(--text-muted)' }}>Total Tickets:</span>
-              <span style={{ fontWeight: 600 }}>{selectedSeats.length} x ₹{ticketPrice.toFixed(2)}</span>
+              <span style={{ fontWeight: 600 }}>{selectedSeats.length} x {currency}{ticketPrice.toFixed(2)}</span>
             </div>
           )}
           
           {selectedSeats.length > 0 && (
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem' }}>
               <span style={{ fontSize: '1.1rem', fontWeight: 600 }}>Total Price:</span>
-              <span className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 800 }}>₹{totalAmount.toFixed(2)}</span>
+              <span className="gradient-text" style={{ fontSize: '1.25rem', fontWeight: 800 }}>{currency}{totalAmount.toFixed(2)}</span>
             </div>
           )}
         </div>

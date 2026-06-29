@@ -140,7 +140,7 @@ const UserBookings = ({ token }) => {
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                     <CreditCard size={14} />
-                    <span>Transaction Total: <strong style={{ color: 'var(--text-main)' }}>₹{parseFloat(booking.total_amount).toFixed(2)}</strong></span>
+                    <span>Transaction Total: <strong style={{ color: 'var(--text-main)' }}>{booking.event_currency || '₹'}{parseFloat(booking.total_amount).toFixed(2)}</strong></span>
                   </div>
                 </div>
               </div>

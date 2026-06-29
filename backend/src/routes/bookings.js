@@ -203,6 +203,7 @@ router.get('/user', authenticateToken, async (req, res) => {
         e.title as event_title,
         e.date as event_date,
         e.venue as event_venue,
+        e.currency as event_currency,
         GROUP_CONCAT(s.seat_number ORDER BY s.seat_number ASC SEPARATOR ', ') as booked_seats
       FROM bookings b
       JOIN events e ON b.event_id = e.id

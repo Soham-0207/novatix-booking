@@ -394,7 +394,7 @@ const EventList = ({ events, onSelectEvent, loading }) => {
                         Ticket Price
                       </span>
                       <span style={{ fontSize: '1.3rem', fontWeight: 700, color: 'var(--text-main)' }}>
-                        ₹{parseFloat(event.ticket_price).toFixed(2)}
+                        {event.currency || '₹'}{parseFloat(event.ticket_price).toFixed(2)}
                       </span>
                     </div>
 

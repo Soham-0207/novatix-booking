@@ -11,7 +11,8 @@ const CreateEvent = () => {
     venue: '',
     total_seats: 50,
     ticket_price: 50,
-    category: 'Entertainment'
+    category: 'Entertainment',
+    currency: '₹'
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -39,7 +40,8 @@ const CreateEvent = () => {
         venue: formData.venue,
         total_seats: parseInt(formData.total_seats),
         ticket_price: parseFloat(formData.ticket_price),
-        category: formData.category
+        category: formData.category,
+        currency: formData.currency
       };
 
       const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/events`, {
@@ -61,7 +63,8 @@ const CreateEvent = () => {
         venue: '',
         total_seats: 50,
         ticket_price: 50,
-        category: 'Entertainment'
+        category: 'Entertainment',
+        currency: '₹'
       });
     } catch (err) {
       setError(err.message);
@@ -169,10 +172,20 @@ const CreateEvent = () => {
             </div>
             
             <div className="form-group">
-              <label>Ticket Price (₹)</label>
-              <div className="input-with-icon">
-                <DollarSign size={18} className="input-icon" />
-                <input className="form-input" type="number" name="ticket_price" value={formData.ticket_price} onChange={handleChange} required min="0" step="0.01" style={{ paddingLeft: '2.5rem' }} />
+              <label>Ticket Price & Currency</label>
+              <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <select className="form-input" name="currency" value={formData.currency} onChange={handleChange} style={{ width: '80px', padding: '0.5rem', cursor: 'pointer' }}>
+                  <option value="₹">₹ INR</option>
+                  <option value="$">$ USD</option>
+                  <option value="€">€ EUR</option>
+                  <option value="£">£ GBP</option>
+                </select>
+                <div className="input-with-icon" style={{ flex: 1 }}>
+                  <span className="input-icon" style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    {formData.currency}
+                  </span>
+                  <input className="form-input" type="number" name="ticket_price" value={formData.ticket_price} onChange={handleChange} required min="0" step="0.01" style={{ paddingLeft: '2.5rem' }} />
+                </div>
               </div>
             </div>
           </div>
