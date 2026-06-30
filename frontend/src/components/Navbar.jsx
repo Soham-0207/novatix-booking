@@ -18,6 +18,12 @@ const Navbar = ({ user, onLogout, setView, view, openAuthModal }) => {
   }, []);
 
   const handleLinkClick = (newView) => {
+    if (newView === 'create-event' && !user) {
+      openAuthModal('login');
+      setIsMobileMenuOpen(false);
+      setIsProfileMenuOpen(false);
+      return;
+    }
     setView(newView);
     setIsMobileMenuOpen(false);
     setIsProfileMenuOpen(false);

@@ -363,7 +363,7 @@ const App = () => {
         ) : view === 'about' ? (
           <AboutPage />
         ) : view === 'create-event' ? (
-          <CreateEvent />
+          <CreateEvent token={token} />
         ) : ['features', 'pricing', 'security', 'roadmap', 'careers', 'blog', 'documentation', 'api-reference', 'community', 'privacy-policy', 'terms-of-service', 'cookie-policy'].includes(view) ? (
           <FooterPages view={view} />
         ) : view === 'my-bookings' ? (

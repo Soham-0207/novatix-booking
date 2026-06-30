@@ -2,6 +2,7 @@ import express from 'express';
 import pool from '../config/db.js';
 import redisClient from '../config/redis.js';
 import crypto from 'crypto';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -88,7 +89,7 @@ router.get('/:id/seats', async (req, res) => {
 });
 
 // Create a new event and automatically generate its seats
-router.post('/', async (req, res) => {
+router.post('/', authenticateToken, async (req, res) => {
   const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency } = req.body;
 
   if (!title || !date || !venue || !total_seats || !ticket_price) {

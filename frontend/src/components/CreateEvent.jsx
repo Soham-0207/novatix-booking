@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, MapPin, Users, DollarSign, Clock, Tag } from 'lucide-react';
 
-const CreateEvent = () => {
+const CreateEvent = ({ token }) => {
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -46,7 +46,10 @@ const CreateEvent = () => {
 
       const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/events`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify(payload)
       });
 
