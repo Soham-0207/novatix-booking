@@ -41,7 +41,8 @@ const CreateEvent = ({ token }) => {
         total_seats: parseInt(formData.total_seats),
         ticket_price: parseFloat(formData.ticket_price),
         category: formData.category,
-        currency: formData.currency
+        currency: formData.currency,
+        deposit_amount: 50
       };
 
       const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/events`, {
@@ -193,8 +194,34 @@ const CreateEvent = ({ token }) => {
             </div>
           </div>
 
+          <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(56, 189, 248, 0.05)', border: '1px solid var(--primary)', marginTop: '1rem', borderRadius: 'var(--radius-md)' }}>
+            <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <DollarSign size={20} color="var(--primary)" />
+              Security Deposit Required
+            </h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+              To ensure platform quality and prevent spam, we require a refundable security deposit of <strong>{formData.currency}50.00</strong> to host an event. 
+              This deposit will be refunded to you after the event completes, minus a 10% platform commission.
+            </p>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div className="form-group" style={{ gridColumn: '1 / -1' }}>
+                <label>Card Number</label>
+                <input className="form-input" type="text" placeholder="0000 0000 0000 0000" maxLength="19" required />
+              </div>
+              <div className="form-group">
+                <label>Expiry Date</label>
+                <input className="form-input" type="text" placeholder="MM/YY" maxLength="5" required />
+              </div>
+              <div className="form-group">
+                <label>CVC</label>
+                <input className="form-input" type="text" placeholder="123" maxLength="4" required />
+              </div>
+            </div>
+          </div>
+
           <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: '1rem', padding: '1rem', fontSize: '1.1rem' }}>
-            {loading ? 'Creating Event...' : 'Publish Event'}
+            {loading ? 'Processing Payment...' : `Pay ${formData.currency}50.00 & Publish Event`}
           </button>
         </form>
       </div>

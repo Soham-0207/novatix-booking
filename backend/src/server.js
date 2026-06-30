@@ -181,6 +181,18 @@ async function initializeDatabase() {
         console.error('Error altering events:', alterErr.message);
       }
     }
+
+    // Add host deposit columns to events if they don't exist
+    try {
+      await pool.query('ALTER TABLE events ADD COLUMN host_id VARCHAR(36)');
+      await pool.query('ALTER TABLE events ADD COLUMN deposit_amount DECIMAL(10, 2) DEFAULT 0');
+      await pool.query('ALTER TABLE events ADD COLUMN deposit_status VARCHAR(20) DEFAULT "none"'); // 'none', 'held', 'refunded'
+      console.log('Added host deposit columns to events.');
+    } catch (alterErr) {
+      if (alterErr.code !== 'ER_DUP_FIELDNAME') {
+        console.error('Error altering events for deposits:', alterErr.message);
+      }
+    }
   } catch (err) {
     console.error('Error checking/initializing database:', err);
   }

@@ -90,9 +90,10 @@ router.get('/:id/seats', async (req, res) => {
 
 // Create a new event and automatically generate its seats
 router.post('/', authenticateToken, async (req, res) => {
-  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency } = req.body;
+  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency, deposit_amount } = req.body;
+  const host_id = req.user.id;
 
-  if (!title || !date || !venue || !total_seats || !ticket_price) {
+  if (!title || !date || !venue || !total_seats || !ticket_price || !deposit_amount) {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
@@ -113,8 +114,8 @@ router.post('/', authenticateToken, async (req, res) => {
     const img = placeholders[Math.floor(Math.random() * placeholders.length)];
 
     await connection.query(
-      'INSERT INTO events (id, title, description, date, duration_hours, venue, total_seats, ticket_price, image_url, category, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [eventId, title, description, date, duration_hours || 2, venue, total_seats, ticket_price, img, category || 'Uncategorized', currency || '₹']
+      'INSERT INTO events (id, title, description, date, duration_hours, venue, total_seats, ticket_price, image_url, category, currency, host_id, deposit_amount, deposit_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [eventId, title, description, date, duration_hours || 2, venue, total_seats, ticket_price, img, category || 'Uncategorized', currency || '₹', host_id, parseFloat(deposit_amount), 'held']
     );
 
     // Seed seats for event (Rows A-Z, 1-10 columns)
@@ -141,6 +142,53 @@ router.post('/', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Server error creating event.' });
   } finally {
     connection.release();
+  }
+});
+
+// Get events hosted by the current user
+router.get('/hosted', authenticateToken, async (req, res) => {
+  const hostId = req.user.id;
+  try {
+    const [result] = await pool.query('SELECT * FROM events WHERE host_id = ? ORDER BY date DESC', [hostId]);
+    res.json(result);
+  } catch (err) {
+    console.error('Error fetching hosted events:', err);
+    res.status(500).json({ error: 'Server error fetching hosted events.' });
+  }
+});
+
+// Process refund and commission for a hosted event
+router.post('/:id/refund', authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const hostId = req.user.id;
+  
+  try {
+    const [events] = await pool.query('SELECT * FROM events WHERE id = ? AND host_id = ?', [id, hostId]);
+    if (events.length === 0) {
+      return res.status(404).json({ error: 'Event not found or unauthorized.' });
+    }
+    
+    const event = events[0];
+    if (event.deposit_status === 'refunded') {
+      return res.status(400).json({ error: 'Deposit has already been refunded.' });
+    }
+    
+    // Simulate refund logic
+    const depositAmount = parseFloat(event.deposit_amount);
+    const commission = depositAmount * 0.10; // 10% commission
+    const refundAmount = depositAmount - commission;
+    
+    await pool.query('UPDATE events SET deposit_status = "refunded" WHERE id = ?', [id]);
+    
+    res.json({ 
+      message: 'Deposit refunded successfully.',
+      originalDeposit: depositAmount,
+      commissionCut: commission,
+      refundedAmount: refundAmount
+    });
+  } catch (err) {
+    console.error('Error processing refund:', err);
+    res.status(500).json({ error: 'Server error processing refund.' });
   }
 });
 
