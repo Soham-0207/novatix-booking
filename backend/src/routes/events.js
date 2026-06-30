@@ -135,17 +135,50 @@ router.post('/', authenticateToken, async (req, res) => {
 
     const eventId = crypto.randomUUID();
     
-    // Use provided image_url or choose a random high-quality placeholder image
-    const placeholders = [
-      'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=60',
-      'https://images.unsplash.com/photo-1533174000255-14f76cc3830c?w=800&auto=format&fit=crop&q=60'
-    ];
+    // Map event categories to beautiful, high-quality Unsplash placeholders
+    const categoryPlaceholders = {
+      'Music': [
+        'https://images.unsplash.com/photo-1540039155732-61ee0175b9f4?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Technology': [
+        'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1540317580384-e5d43616b9aa?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Arts & Culture': [
+        'https://images.unsplash.com/photo-1531058020387-3be344556be6?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Festivals': [
+        'https://images.unsplash.com/photo-1533174000255-14f76cc3830c?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Entertainment': [
+        'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1603190287605-e6ade32fa852?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Sports': [
+        'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Workshops': [
+        'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Charity': [
+        'https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?w=800&auto=format&fit=crop&q=60',
+        'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=800&auto=format&fit=crop&q=60',
+      ],
+      'Default': [
+        'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&auto=format&fit=crop&q=60'
+      ]
+    };
+
     let img = image_url;
     if (!img || img.trim() === '') {
-      img = placeholders[Math.floor(Math.random() * placeholders.length)];
+      const selectedCategory = category || 'Default';
+      const imagesList = categoryPlaceholders[selectedCategory] || categoryPlaceholders['Default'];
+      img = imagesList[Math.floor(Math.random() * imagesList.length)];
     }
 
     await connection.query(
