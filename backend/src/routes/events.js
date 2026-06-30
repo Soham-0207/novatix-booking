@@ -122,7 +122,7 @@ router.get('/:id/seats', async (req, res) => {
 
 // Create a new event and automatically generate its seats
 router.post('/', authenticateToken, async (req, res) => {
-  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency, deposit_amount } = req.body;
+  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency, deposit_amount, image_url } = req.body;
   const host_id = req.user.id;
 
   if (!title || !date || !venue || !total_seats || !ticket_price || !deposit_amount) {
@@ -135,7 +135,7 @@ router.post('/', authenticateToken, async (req, res) => {
 
     const eventId = crypto.randomUUID();
     
-    // Choose a random high-quality placeholder image for user-created events
+    // Use provided image_url or choose a random high-quality placeholder image
     const placeholders = [
       'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&auto=format&fit=crop&q=60',
       'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=800&auto=format&fit=crop&q=60',
@@ -143,7 +143,10 @@ router.post('/', authenticateToken, async (req, res) => {
       'https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&auto=format&fit=crop&q=60',
       'https://images.unsplash.com/photo-1533174000255-14f76cc3830c?w=800&auto=format&fit=crop&q=60'
     ];
-    const img = placeholders[Math.floor(Math.random() * placeholders.length)];
+    let img = image_url;
+    if (!img || img.trim() === '') {
+      img = placeholders[Math.floor(Math.random() * placeholders.length)];
+    }
 
     await connection.query(
       'INSERT INTO events (id, title, description, date, duration_hours, venue, total_seats, ticket_price, image_url, category, currency, host_id, deposit_amount, deposit_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',

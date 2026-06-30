@@ -12,7 +12,8 @@ const CreateEvent = ({ token }) => {
     total_seats: 50,
     ticket_price: 50,
     category: 'Entertainment',
-    currency: '₹'
+    currency: '₹',
+    image_url: ''
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -42,6 +43,7 @@ const CreateEvent = ({ token }) => {
         ticket_price: parseFloat(formData.ticket_price),
         category: formData.category,
         currency: formData.currency,
+        image_url: formData.image_url,
         deposit_amount: 500
       };
 
@@ -68,7 +70,8 @@ const CreateEvent = ({ token }) => {
         total_seats: 50,
         ticket_price: 50,
         category: 'Entertainment',
-        currency: '₹'
+        currency: '₹',
+        image_url: ''
       });
     } catch (err) {
       setError(err.message);
@@ -138,6 +141,12 @@ const CreateEvent = ({ token }) => {
           <div className="form-group">
             <label>Description</label>
             <textarea className="form-input" name="description" value={formData.description} onChange={handleChange} rows="3" required placeholder="Tell attendees what to expect..."></textarea>
+          </div>
+
+          <div className="form-group">
+            <label>Cover Image URL (Optional)</label>
+            <input className="form-input" type="url" name="image_url" value={formData.image_url || ''} onChange={handleChange} placeholder="https://example.com/image.jpg" />
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-dimmed)', marginTop: '0.25rem', display: 'block' }}>Leave blank to use a beautiful default image.</span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
