@@ -129,6 +129,10 @@ router.post('/', authenticateToken, async (req, res) => {
     return res.status(400).json({ error: 'Missing required fields.' });
   }
 
+  if (new Date(date) < new Date()) {
+    return res.status(400).json({ error: 'Event date and time cannot be in the past.' });
+  }
+
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();

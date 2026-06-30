@@ -33,6 +33,12 @@ const CreateEvent = ({ token }) => {
       // Combine date and time for backend
       const dateTime = `${formData.date} ${formData.time}:00`;
       
+      if (new Date(dateTime) < new Date()) {
+        setError('Event date and time cannot be in the past.');
+        setLoading(false);
+        return;
+      }
+      
       const payload = {
         title: formData.title,
         description: formData.description,
@@ -152,7 +158,7 @@ const CreateEvent = ({ token }) => {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
             <div className="form-group">
               <label>Date</label>
-              <input className="form-input" type="date" name="date" value={formData.date} onChange={handleChange} required />
+              <input className="form-input" type="date" name="date" value={formData.date} min={new Date().toISOString().split('T')[0]} onChange={handleChange} required />
             </div>
             <div className="form-group">
               <label>Time</label>
