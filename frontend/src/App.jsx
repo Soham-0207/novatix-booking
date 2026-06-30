@@ -15,8 +15,16 @@ import confetti from 'canvas-confetti';
 import { AlertCircle, CheckCircle2, Info, MapPin, Hourglass } from 'lucide-react';
 
 const App = () => {
-  // Navigation & Views
-  const [view, setView] = useState('events'); // 'events', 'my-bookings', 'contact'
+  // Initial URL parsing
+  const getInitialView = () => {
+    const path = window.location.pathname;
+    if (path !== '/' && !path.startsWith('/event/')) {
+      return path.substring(1);
+    }
+    return 'events';
+  };
+
+  const [view, setView] = useState(getInitialView()); // 'events', 'my-bookings', 'contact'
   
   const handleNavClick = async (newView) => {
     if (isReserved) {
@@ -26,7 +34,8 @@ const App = () => {
       setSelectedEvent(null);
     }
     setView(newView);
-    window.history.pushState({ view: newView }, '', '');
+    const url = newView === 'events' ? '/' : `/${newView}`;
+    window.history.pushState({ view: newView }, '', url);
   };
 
 
@@ -60,13 +69,15 @@ const App = () => {
       if (isReserved) handleReleaseSeats();
       resetBookingState();
 
-      if (e.state && e.state.eventId) {
-        const evt = events.find(ev => ev.id === e.state.eventId);
+      const path = window.location.pathname;
+      if (path.startsWith('/event/')) {
+        const id = path.split('/')[2];
+        const evt = events.find(ev => ev.id === id);
         setSelectedEvent(evt || null);
         setView('events');
-      } else if (e.state && e.state.view) {
+      } else if (path !== '/' && path !== '') {
         setSelectedEvent(null);
-        setView(e.state.view);
+        setView(path.substring(1));
       } else {
         // Initial state
         setSelectedEvent(null);
@@ -126,6 +137,18 @@ const App = () => {
       if (response.ok) {
         const data = await response.json();
         setEvents(data);
+        
+        // Check URL for direct navigation
+        const path = window.location.pathname;
+        if (path.startsWith('/event/')) {
+          const id = path.split('/')[2];
+          const evt = data.find(e => e.id === id);
+          if (evt) {
+            setSelectedEvent(evt);
+          } else {
+            window.history.replaceState({}, '', '/');
+          }
+        }
       }
     } catch (err) {
       showToast('Error loading events.', 'error');
@@ -205,7 +228,7 @@ const App = () => {
     setUser(null);
     setView('events');
     resetBookingState();
-    window.history.pushState({ view: 'events' }, '', '');
+    window.history.pushState({ view: 'events' }, '', '/');
     showToast('Signed out successfully.', 'info');
   };
 
@@ -323,7 +346,7 @@ const App = () => {
         setSelectedEvent(null);
         fetchEvents(); // reload event counts
         setView('my-bookings'); // show user tickets
-        window.history.pushState({ view: 'my-bookings' }, '', '');
+        window.history.pushState({ view: 'my-bookings' }, '', '/my-bookings');
       } else {
         showToast(data.error || 'Booking failed.', 'error');
       }
@@ -449,7 +472,7 @@ const App = () => {
                   if (isReserved) handleReleaseSeats();
                   resetBookingState();
                   setSelectedEvent(null);
-                  window.history.pushState({ view: 'events' }, '', '');
+                  window.history.pushState({ view: 'events' }, '', '/');
                 }} // cancels hold if they go back
                 user={user}
                 openAuthModal={() => setAuthModalOpen(true)}
@@ -473,7 +496,7 @@ const App = () => {
               if (isReserved) handleReleaseSeats();
               resetBookingState();
               setSelectedEvent(event);
-              window.history.pushState({ eventId: event.id }, '', '');
+              window.history.pushState({ eventId: event.id }, '', `/event/${event.id}`);
             }} 
             loading={eventsLoading}
           />
