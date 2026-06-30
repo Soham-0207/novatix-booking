@@ -115,3 +115,44 @@ export const sendContactAutoResponseEmail = async (toEmail, userName, originalSu
 
   return transporter.sendMail(mailOptions);
 };
+
+export const sendTicketEmail = async (toEmail, userName, eventTitle, eventDateFormatted, venue, seats, totalAmount, currency) => {
+  const mailOptions = {
+    from: `"NovaTix Booking" <${process.env.MAIL_USER}>`,
+    to: toEmail,
+    subject: `Your Tickets for ${eventTitle}`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9fafb;">
+        <div style="text-align: center; padding-bottom: 20px; border-bottom: 1px solid #eee;">
+          <h1 style="color: #6366f1; margin: 0;">NovaTix</h1>
+          <p style="color: #6b7280; font-size: 0.9rem; margin-top: 5px;">Your Booking Confirmation</p>
+        </div>
+        
+        <div style="padding: 20px 0;">
+          <h2 style="color: #1f2937; margin-top: 0;">Hi ${userName},</h2>
+          <p style="color: #4b5563; font-size: 1.05rem;">
+            Thank you for your purchase! You are all set for <strong>${eventTitle}</strong>.
+          </p>
+          
+          <div style="background-color: white; border-radius: 8px; padding: 20px; margin: 25px 0; border: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <h3 style="margin-top: 0; color: #111827;">Event & Ticket Details</h3>
+            <p style="margin: 10px 0; color: #4b5563;">📅 <strong>When:</strong> ${eventDateFormatted}</p>
+            <p style="margin: 10px 0; color: #4b5563;">📍 <strong>Where:</strong> ${venue}</p>
+            <p style="margin: 10px 0; color: #4b5563;">🎟️ <strong>Seats:</strong> ${seats.join(', ')}</p>
+            <p style="margin: 10px 0; color: #4b5563;">💳 <strong>Total Paid:</strong> ${currency}${totalAmount}</p>
+          </div>
+          
+          <p style="color: #4b5563;">
+            Please show this email at the venue entrance. We hope you have a great time!
+          </p>
+        </div>
+        
+        <div style="text-align: center; padding-top: 20px; border-top: 1px solid #eee; color: #9ca3af; font-size: 0.8rem;">
+          <p>Thank you for booking with NovaTix!</p>
+        </div>
+      </div>
+    `
+  };
+
+  return transporter.sendMail(mailOptions);
+};

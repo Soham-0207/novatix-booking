@@ -135,8 +135,8 @@ router.post('/book', authenticateToken, async (req, res) => {
       }
     }
 
-    // D. Fetch the event details to calculate price
-    const [eventResult] = await dbClient.query('SELECT ticket_price FROM events WHERE id = ?', [eventId]);
+    // D. Fetch the event details to calculate price and send email
+    const [eventResult] = await dbClient.query('SELECT title, date, venue, currency, ticket_price FROM events WHERE id = ?', [eventId]);
     if (eventResult.length === 0) {
       throw new Error('Event not found.');
     }
@@ -172,8 +172,21 @@ router.post('/book', authenticateToken, async (req, res) => {
       await redisClient.del(lockKey);
     }
 
+    // I. Send Ticket Email to the user (Don't await it so we don't block the response)
+    const [userRes] = await pool.query('SELECT name FROM users WHERE id = ?', [userId]);
+    const userName = userRes[0]?.name || 'Customer';
+    const eventDateFormatted = new Date(eventResult[0].date).toLocaleString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    
+    // We import dynamically to avoid top-level issues if the file is moved, or we could import at top. Let's import at top later, or dynamic here.
+    import('../utils/email.js')
+      .then(({ sendTicketEmail }) => {
+        const seatNumbers = dbSeats.map(s => s.seat_number);
+        return sendTicketEmail(req.user.email, userName, eventResult[0].title, eventDateFormatted, eventResult[0].venue, seatNumbers, totalAmount, eventResult[0].currency || '₹');
+      })
+      .catch(err => console.error('Error sending ticket email:', err));
+
     res.json({
-      message: 'Booking completed successfully!',
+      message: 'Booking completed successfully! Tickets have been emailed to you.',
       bookingId,
       totalAmount,
       seats: dbSeats.map(s => s.seat_number),
