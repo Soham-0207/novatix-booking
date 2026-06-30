@@ -42,7 +42,7 @@ const CreateEvent = ({ token }) => {
         ticket_price: parseFloat(formData.ticket_price),
         category: formData.category,
         currency: formData.currency,
-        deposit_amount: 50
+        deposit_amount: 500
       };
 
       const res = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/events`, {
@@ -200,7 +200,7 @@ const CreateEvent = ({ token }) => {
               Security Deposit Required
             </h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-              To ensure platform quality and prevent spam, we require a refundable security deposit of <strong>{formData.currency}50.00</strong> to host an event. 
+              To ensure platform quality and prevent spam, we require a refundable security deposit of <strong>{formData.currency}500.00</strong> to host an event. 
               This deposit will be refunded to you after the event completes, minus a 10% platform commission.
             </p>
 
@@ -221,7 +221,7 @@ const CreateEvent = ({ token }) => {
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: '1rem', padding: '1rem', fontSize: '1.1rem' }}>
-            {loading ? 'Processing Payment...' : `Pay ${formData.currency}50.00 & Publish Event`}
+            {loading ? 'Processing Payment...' : `Pay ${formData.currency}500.00 & Publish Event`}
           </button>
         </form>
       </div>
