@@ -200,8 +200,8 @@ const CreateEvent = ({ token }) => {
               Security Deposit Required
             </h3>
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-              To ensure platform quality and prevent spam, we require a refundable security deposit of <strong>{formData.currency}500.00</strong> to host an event. 
-              Your deposit is held securely until your event concludes. Afterward, it will be automatically refunded to you, less a small 10% platform fee.
+              To ensure platform quality, a refundable security deposit of <strong>{formData.currency}500.00</strong> is required to host an event. 
+              Refundable post-event, less a 10% platform fee.
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
