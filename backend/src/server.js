@@ -174,7 +174,7 @@ async function initializeDatabase() {
 
     // Add currency column to events if it doesn't exist
     try {
-      await pool.query('ALTER TABLE events ADD COLUMN currency VARCHAR(10) DEFAULT "₹"');
+      await pool.query("ALTER TABLE events ADD COLUMN currency VARCHAR(10) DEFAULT '₹'");
       console.log('Added currency column to events.');
     } catch (alterErr) {
       if (alterErr.code !== 'ER_DUP_FIELDNAME') {
@@ -184,9 +184,9 @@ async function initializeDatabase() {
 
     // Add host deposit columns to events if they don't exist
     try {
-      await pool.query('ALTER TABLE events ADD COLUMN host_id VARCHAR(36)');
-      await pool.query('ALTER TABLE events ADD COLUMN deposit_amount DECIMAL(10, 2) DEFAULT 0');
-      await pool.query('ALTER TABLE events ADD COLUMN deposit_status VARCHAR(20) DEFAULT "none"'); // 'none', 'held', 'refunded'
+      await pool.query("ALTER TABLE events ADD COLUMN host_id VARCHAR(36)");
+      await pool.query("ALTER TABLE events ADD COLUMN deposit_amount DECIMAL(10, 2) DEFAULT 0");
+      await pool.query("ALTER TABLE events ADD COLUMN deposit_status VARCHAR(20) DEFAULT 'none'"); // 'none', 'held', 'refunded'
       console.log('Added host deposit columns to events.');
     } catch (alterErr) {
       if (alterErr.code !== 'ER_DUP_FIELDNAME') {

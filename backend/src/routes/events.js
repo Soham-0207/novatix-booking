@@ -6,6 +6,26 @@ import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
+router.get('/force-init', async (req, res) => {
+  const addColumn = async (query) => {
+    try {
+      await pool.query(query);
+    } catch (err) {
+      if (err.code !== 'ER_DUP_FIELDNAME') throw err;
+    }
+  };
+
+  try {
+    await addColumn("ALTER TABLE events ADD COLUMN currency VARCHAR(10) DEFAULT '₹'");
+    await addColumn("ALTER TABLE events ADD COLUMN host_id VARCHAR(36)");
+    await addColumn("ALTER TABLE events ADD COLUMN deposit_amount DECIMAL(10, 2) DEFAULT 0");
+    await addColumn("ALTER TABLE events ADD COLUMN deposit_status VARCHAR(20) DEFAULT 'none'");
+    res.json({ message: 'All migrations applied!' });
+  } catch (err) {
+    res.json({ error: err.message, code: err.code });
+  }
+});
+
 // Get all events with available seat counts
 router.get('/', async (req, res) => {
   try {
