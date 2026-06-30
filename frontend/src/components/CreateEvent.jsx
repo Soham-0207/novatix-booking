@@ -157,49 +157,53 @@ const CreateEvent = ({ token }) => {
             <div className="form-group">
               <label>Time</label>
               <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <select 
+                <input 
+                  type="number"
                   className="form-input" 
+                  min="1"
+                  max="12"
                   value={formData.time ? (() => {
                     let h = parseInt(formData.time.split(':')[0], 10);
+                    if (isNaN(h)) return '12';
                     h = h % 12;
                     if (h === 0) h = 12;
                     return h.toString().padStart(2, '0');
                   })() : '12'} 
                   onChange={(e) => {
-                    const val = e.target.value;
+                    let val = parseInt(e.target.value, 10);
+                    if (isNaN(val)) val = 12;
+                    if (val > 12) val = 12;
+                    if (val < 1) val = 1;
+                    
                     let m = formData.time ? formData.time.split(':')[1] : '00';
                     let currentAmPm = formData.time && parseInt(formData.time.split(':')[0], 10) < 12 ? 'AM' : 'PM';
-                    let h = parseInt(val, 10);
-                    let h24 = h;
-                    if (currentAmPm === 'PM' && h !== 12) h24 += 12;
-                    if (currentAmPm === 'AM' && h === 12) h24 = 0;
+                    let h24 = val;
+                    if (currentAmPm === 'PM' && val !== 12) h24 += 12;
+                    if (currentAmPm === 'AM' && val === 12) h24 = 0;
                     setFormData(prev => ({ ...prev, time: `${h24.toString().padStart(2, '0')}:${m}` }));
                   }}
                   required
-                  style={{ padding: '0.5rem', cursor: 'pointer', appearance: 'none', background: 'var(--bg-card) url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a0a0a0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 0.5rem top 50%', backgroundSize: '0.65rem auto' }}
-                >
-                  <option value="" disabled hidden>Hr</option>
-                  {Array.from({ length: 12 }, (_, i) => i + 1).map(h => (
-                    <option key={h} value={h.toString().padStart(2, '0')}>{h.toString().padStart(2, '0')}</option>
-                  ))}
-                </select>
+                  style={{ padding: '0.5rem', width: '70px', textAlign: 'center' }}
+                />
                 <span style={{ display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>:</span>
-                <select 
+                <input 
+                  type="number"
                   className="form-input" 
+                  min="0"
+                  max="59"
                   value={formData.time ? formData.time.split(':')[1] : '00'}
                   onChange={(e) => {
-                    const m = e.target.value;
+                    let val = parseInt(e.target.value, 10);
+                    if (isNaN(val)) val = 0;
+                    if (val > 59) val = 59;
+                    if (val < 0) val = 0;
+                    
                     let h24 = formData.time ? formData.time.split(':')[0] : '12';
-                    setFormData(prev => ({ ...prev, time: `${h24}:${m}` }));
+                    setFormData(prev => ({ ...prev, time: `${h24}:${val.toString().padStart(2, '0')}` }));
                   }}
                   required
-                  style={{ padding: '0.5rem', cursor: 'pointer', appearance: 'none', background: 'var(--bg-card) url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a0a0a0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 0.5rem top 50%', backgroundSize: '0.65rem auto' }}
-                >
-                  <option value="" disabled hidden>Min</option>
-                  {['00', '15', '30', '45'].map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
+                  style={{ padding: '0.5rem', width: '70px', textAlign: 'center' }}
+                />
                 <select 
                   className="form-input" 
                   value={formData.time ? (parseInt(formData.time.split(':')[0], 10) >= 12 ? 'PM' : 'AM') : 'PM'}
