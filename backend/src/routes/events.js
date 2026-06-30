@@ -26,6 +26,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get events hosted by the current user
+router.get('/hosted', authenticateToken, async (req, res) => {
+  const hostId = req.user.id;
+  try {
+    const [result] = await pool.query('SELECT * FROM events WHERE host_id = ? ORDER BY date DESC', [hostId]);
+    res.json(result);
+  } catch (err) {
+    console.error('Error fetching hosted events:', err);
+    res.status(500).json({ error: 'Server error fetching hosted events.' });
+  }
+});
+
 // Get event by ID
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
@@ -145,17 +157,6 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// Get events hosted by the current user
-router.get('/hosted', authenticateToken, async (req, res) => {
-  const hostId = req.user.id;
-  try {
-    const [result] = await pool.query('SELECT * FROM events WHERE host_id = ? ORDER BY date DESC', [hostId]);
-    res.json(result);
-  } catch (err) {
-    console.error('Error fetching hosted events:', err);
-    res.status(500).json({ error: 'Server error fetching hosted events.' });
-  }
-});
 
 // Process refund and commission for a hosted event
 router.post('/:id/refund', authenticateToken, async (req, res) => {
