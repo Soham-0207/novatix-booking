@@ -210,7 +210,7 @@ router.get('/user', authenticateToken, async (req, res) => {
       JOIN booking_seats bs ON b.id = bs.booking_id
       JOIN seats s ON bs.seat_id = s.id
       WHERE b.user_id = ?
-      GROUP BY b.id, e.title, e.date, e.venue, b.total_amount, b.created_at
+      GROUP BY b.id, e.title, e.date, e.venue, e.currency, b.total_amount, b.created_at
       ORDER BY b.created_at DESC
     `;
     const [result] = await pool.query(query, [userId]);
