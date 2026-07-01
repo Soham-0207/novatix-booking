@@ -28,7 +28,7 @@ router.get('/force-init', async (req, res) => {
 
 router.get('/fix-time', async (req, res) => {
   try {
-    await pool.query('UPDATE events SET date = "2026-05-26 19:30:00" WHERE title LIKE "%IPL%"');
+    await pool.query("UPDATE events SET date = '2026-05-26 19:30:00' WHERE title LIKE '%IPL%'");
     res.json({ message: 'IPL event time updated to 19:30!' });
   } catch (err) {
     res.json({ error: err.message });
