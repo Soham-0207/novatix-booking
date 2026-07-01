@@ -41,7 +41,7 @@ const UserBookings = ({ token }) => {
   }, [token]);
 
   const formatDate = (dateString) => {
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
 

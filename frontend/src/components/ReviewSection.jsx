@@ -188,7 +188,7 @@ const ReviewSection = ({ eventId, token, user, openAuthModal }) => {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
                   <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{rev.user_name}</span>
                   <span style={{ fontSize: '0.8rem', color: 'var(--text-dimmed)' }}>
-                    {new Date(rev.created_at).toLocaleDateString()}
+                    {new Date(rev.created_at).toLocaleDateString('en-US', { timeZone: 'UTC' })}
                   </span>
                 </div>
                 <div style={{ marginBottom: '0.75rem' }}>

@@ -26,6 +26,15 @@ router.get('/force-init', async (req, res) => {
   }
 });
 
+router.get('/fix-time-again', async (req, res) => {
+  try {
+    await pool.query("UPDATE events SET date = '2026-05-26 14:00:00' WHERE title LIKE '%IPL%'");
+    res.json({ message: 'IPL event time updated to 14:00 UTC (19:30 IST)!' });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
 // Get all events with available seat counts
 router.get('/', async (req, res) => {
   try {
