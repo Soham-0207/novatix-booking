@@ -40,8 +40,8 @@ const UserBookings = ({ token }) => {
     fetchData();
   }, [token]);
 
-  const formatDate = (dateString) => {
-    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC' };
+  const formatDate = (dateString, timezone = 'UTC') => {
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: timezone };
     return new Date(dateString).toLocaleDateString('en-US', options);
   };
 
@@ -149,7 +149,7 @@ const UserBookings = ({ token }) => {
                     <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', marginBottom: '1.25rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                         <Calendar size={14} className="gradient-text" />
-                        <span>{formatDate(booking.event_date)}</span>
+                        <span>{formatDate(booking.event_date, booking.event_timezone)}</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                         <MapPin size={14} className="gradient-text" />
