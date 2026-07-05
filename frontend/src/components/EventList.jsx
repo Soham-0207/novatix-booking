@@ -262,7 +262,7 @@ const EventList = ({ events, onSelectEvent, loading }) => {
                     display: 'flex',
                     gap: '0.5rem',
                   }}>
-                    {event.is_featured && (
+                    {!!event.is_featured && (
                       <span style={{
                         background: 'linear-gradient(45deg, #FFD700, #FDB931)', // Gold gradient
                         color: 'black',
