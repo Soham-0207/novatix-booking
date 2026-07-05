@@ -47,11 +47,16 @@ const EventList = ({ events, onSelectEvent, loading }) => {
       return parseFloat(a.ticket_price) - parseFloat(b.ticket_price);
     } else if (sortOrder === 'price-desc') {
       return parseFloat(b.ticket_price) - parseFloat(a.ticket_price);
-    } else if (sortOrder === 'popularity') {
+    } else if (sortOrder === 'popularity-desc') {
       // Sort by popularity (most tickets sold)
       const soldA = parseInt(a.total_seats) - parseInt(a.available_seats);
       const soldB = parseInt(b.total_seats) - parseInt(b.available_seats);
       return soldB - soldA;
+    } else if (sortOrder === 'popularity-asc') {
+      // Sort by popularity (least tickets sold)
+      const soldA = parseInt(a.total_seats) - parseInt(a.available_seats);
+      const soldB = parseInt(b.total_seats) - parseInt(b.available_seats);
+      return soldA - soldB;
     }
     
     // Default (none): preserve backend order which puts Featured events first
@@ -130,25 +135,49 @@ const EventList = ({ events, onSelectEvent, loading }) => {
             ))}
           </select>
 
-          {/* Price Sort */}
-          <select
-            className="form-input"
-            value={sortOrder}
-            onChange={(e) => setSortOrder(e.target.value)}
-            style={{
-              width: 'auto',
-              minWidth: '160px',
-              cursor: 'pointer',
-              appearance: 'none',
-              background: 'var(--bg-card) url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23a0a0a0%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E") no-repeat right 1rem top 50%',
-              backgroundSize: '0.65rem auto',
-            }}
-          >
-            <option value="none">Sort by</option>
-            <option value="popularity">Popularity</option>
-            <option value="price-asc">Price ↑ (Low to High)</option>
-            <option value="price-desc">Price ↓ (High to Low)</option>
-          </select>
+          {/* Sort Toggles */}
+          <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(0,0,0,0.2)', padding: '0.25rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
+            <span style={{ padding: '0.4rem 0.6rem', fontSize: '0.9rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center' }}>Sort:</span>
+            <button 
+              className="btn-secondary"
+              style={{
+                padding: '0.4rem 0.8rem',
+                fontSize: '0.9rem',
+                background: sortOrder.startsWith('price') ? 'var(--primary)' : 'transparent',
+                color: sortOrder.startsWith('price') ? 'black' : 'var(--text-main)',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}
+              onClick={() => {
+                if (sortOrder === 'price-asc') setSortOrder('price-desc');
+                else setSortOrder('price-asc');
+              }}
+            >
+              Price {sortOrder === 'price-asc' ? '↑' : sortOrder === 'price-desc' ? '↓' : ''}
+            </button>
+            
+            <button 
+              className="btn-secondary"
+              style={{
+                padding: '0.4rem 0.8rem',
+                fontSize: '0.9rem',
+                background: sortOrder.startsWith('popularity') ? 'var(--primary)' : 'transparent',
+                color: sortOrder.startsWith('popularity') ? 'black' : 'var(--text-main)',
+                border: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.25rem'
+              }}
+              onClick={() => {
+                if (sortOrder === 'popularity-desc') setSortOrder('popularity-asc');
+                else setSortOrder('popularity-desc');
+              }}
+            >
+              Popularity {sortOrder === 'popularity-desc' ? '↓' : sortOrder === 'popularity-asc' ? '↑' : ''}
+            </button>
+          </div>
 
           {/* Search Box */}
           <div style={{
