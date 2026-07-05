@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Users, DollarSign, Clock, Tag } from 'lucide-react';
+import { Calendar, MapPin, Users, DollarSign, Clock, Tag, ImagePlus } from 'lucide-react';
 
 const CreateEvent = ({ token }) => {
   const [formData, setFormData] = useState({
@@ -154,19 +154,32 @@ const CreateEvent = ({ token }) => {
 
           <div className="form-group">
             <label>Cover Image (Optional)</label>
-            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <input 
                 className="form-input" 
                 type="text" 
                 name="image_url" 
                 value={formData.image_url || ''} 
                 onChange={handleChange} 
-                placeholder="https://example.com/image.jpg or Browse local file" 
-                style={{ flex: 1 }}
+                placeholder="https://example.com/image.jpg or click icon to upload" 
+                style={{ width: '100%', paddingRight: '2.5rem' }}
               />
-              <span style={{ color: 'var(--text-muted)' }}>OR</span>
-              <label style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)', display: 'inline-block', fontWeight: 500 }}>
-                Browse...
+              <label 
+                title="Upload local image"
+                style={{ 
+                  position: 'absolute', 
+                  right: '0.75rem', 
+                  cursor: 'pointer', 
+                  color: 'var(--text-muted)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'color 0.2s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--text-main)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
+              >
+                <ImagePlus size={18} />
                 <input 
                   type="file" 
                   accept="image/*" 
@@ -184,7 +197,7 @@ const CreateEvent = ({ token }) => {
                 />
               </label>
             </div>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-dimmed)', marginTop: '0.25rem', display: 'block' }}>Enter a URL, browse a local image, or leave blank for a default image. Note: Local images shouldn't exceed 1MB.</span>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-dimmed)', marginTop: '0.25rem', display: 'block' }}>Enter a URL, click the icon to upload a local image (max 1MB), or leave blank for a default image.</span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
