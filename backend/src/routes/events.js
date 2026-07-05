@@ -26,6 +26,24 @@ router.get('/force-init', async (req, res) => {
   }
 });
 
+router.get('/force-init-monetization', async (req, res) => {
+  const addColumn = async (query) => {
+    try {
+      await pool.query(query);
+    } catch (err) {
+      if (err.code !== 'ER_DUP_FIELDNAME') throw err;
+    }
+  };
+
+  try {
+    await addColumn("ALTER TABLE events ADD COLUMN is_featured BOOLEAN DEFAULT FALSE");
+    await addColumn("ALTER TABLE bookings ADD COLUMN platform_fee DECIMAL(10, 2) DEFAULT 0");
+    res.json({ message: 'Monetization migrations applied!' });
+  } catch (err) {
+    res.json({ error: err.message, code: err.code });
+  }
+});
+
 // Get all events with available seat counts
 router.get('/', async (req, res) => {
   try {
@@ -36,7 +54,7 @@ router.get('/', async (req, res) => {
       FROM events e
       LEFT JOIN seats s ON e.id = s.event_id
       GROUP BY e.id
-      ORDER BY e.date ASC
+      ORDER BY e.is_featured DESC, e.date ASC
     `;
     const [result] = await pool.query(query);
     res.json(result);
@@ -122,7 +140,7 @@ router.get('/:id/seats', async (req, res) => {
 
 // Create a new event and automatically generate its seats
 router.post('/', authenticateToken, async (req, res) => {
-  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency, deposit_amount, image_url } = req.body;
+  const { title, description, date, duration_hours, venue, total_seats, ticket_price, category, currency, deposit_amount, image_url, is_featured } = req.body;
   const host_id = req.user.id;
 
   if (!title || !date || !venue || !total_seats || !ticket_price || !deposit_amount) {
@@ -186,8 +204,8 @@ router.post('/', authenticateToken, async (req, res) => {
     }
 
     await connection.query(
-      'INSERT INTO events (id, title, description, date, duration_hours, venue, total_seats, ticket_price, image_url, category, currency, host_id, deposit_amount, deposit_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      [eventId, title, description, date, duration_hours || 2, venue, total_seats, ticket_price, img, category || 'Uncategorized', currency || '₹', host_id, parseFloat(deposit_amount), 'held']
+      'INSERT INTO events (id, title, description, date, duration_hours, venue, total_seats, ticket_price, image_url, category, currency, host_id, deposit_amount, deposit_status, is_featured) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      [eventId, title, description, date, duration_hours || 2, venue, total_seats, ticket_price, img, category || 'Uncategorized', currency || '₹', host_id, parseFloat(deposit_amount), 'held', is_featured ? true : false]
     );
 
     // Seed seats for event (Rows A-Z, 1-10 columns)

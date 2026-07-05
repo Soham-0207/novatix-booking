@@ -13,15 +13,16 @@ const CreateEvent = ({ token }) => {
     ticket_price: 50,
     category: 'Entertainment',
     currency: '₹',
-    image_url: ''
+    image_url: '',
+    is_featured: false
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: type === 'checkbox' ? checked : value }));
   };
 
   const handleSubmit = async (e) => {
@@ -50,6 +51,7 @@ const CreateEvent = ({ token }) => {
         category: formData.category,
         currency: formData.currency,
         image_url: formData.image_url,
+        is_featured: formData.is_featured,
         deposit_amount: 500
       };
 
@@ -77,7 +79,8 @@ const CreateEvent = ({ token }) => {
         ticket_price: 50,
         category: 'Entertainment',
         currency: '₹',
-        image_url: ''
+        image_url: '',
+        is_featured: false
       });
     } catch (err) {
       setError(err.message);
@@ -281,6 +284,20 @@ const CreateEvent = ({ token }) => {
             </div>
           </div>
 
+          <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <input 
+              type="checkbox" 
+              id="is_featured" 
+              name="is_featured" 
+              checked={formData.is_featured} 
+              onChange={handleChange} 
+              style={{ width: '1.2rem', height: '1.2rem', cursor: 'pointer', accentColor: 'var(--primary)' }} 
+            />
+            <label htmlFor="is_featured" style={{ cursor: 'pointer', margin: 0 }}>
+              Promote this event at the top of the homepage (+ {formData.currency}1,000.00 marketing fee)
+            </label>
+          </div>
+
           <div className="glass-panel" style={{ padding: '1.5rem', background: 'rgba(56, 189, 248, 0.05)', border: '1px solid var(--primary)', marginTop: '1rem', borderRadius: 'var(--radius-md)' }}>
             <h3 style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <DollarSign size={20} color="var(--primary)" />
@@ -289,6 +306,7 @@ const CreateEvent = ({ token }) => {
             <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
               To ensure platform quality, a refundable security deposit of <strong>{formData.currency}500.00</strong> is required to host an event. 
               Refundable post-event, less a 10% platform fee.
+              {formData.is_featured && <span> A non-refundable <strong>{formData.currency}1,000.00</strong> marketing fee is also added for promoting your event.</span>}
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -308,7 +326,7 @@ const CreateEvent = ({ token }) => {
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading} style={{ marginTop: '1rem', padding: '1rem', fontSize: '1.1rem' }}>
-            {loading ? 'Processing Payment...' : `Pay ${formData.currency}500.00 & Publish Event`}
+            {loading ? 'Processing Payment...' : `Pay ${formData.currency}${formData.is_featured ? '1,500.00' : '500.00'} & Publish Event`}
           </button>
         </form>
       </div>

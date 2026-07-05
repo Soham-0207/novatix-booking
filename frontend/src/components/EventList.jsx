@@ -229,6 +229,21 @@ const EventList = ({ events, onSelectEvent, loading }) => {
                     display: 'flex',
                     gap: '0.5rem',
                   }}>
+                    {event.is_featured && (
+                      <span style={{
+                        background: 'linear-gradient(45deg, #FFD700, #FDB931)', // Gold gradient
+                        color: 'black',
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        fontWeight: '800',
+                        textTransform: 'uppercase',
+                        boxShadow: '0 0 10px rgba(255, 215, 0, 0.5)',
+                        border: '1px solid #FFDF00'
+                      }}>
+                        Sponsored
+                      </span>
+                    )}
                     {isPast ? (
                       <span style={{
                         background: 'rgba(107, 114, 128, 0.9)', // Gray for Finished

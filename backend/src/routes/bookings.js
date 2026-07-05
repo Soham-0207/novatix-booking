@@ -141,13 +141,15 @@ router.post('/book', authenticateToken, async (req, res) => {
       throw new Error('Event not found.');
     }
     const ticketPrice = eventResult[0].ticket_price;
-    const totalAmount = ticketPrice * seatIds.length;
+    const baseAmount = ticketPrice * seatIds.length;
+    const platformFee = baseAmount * 0.05;
+    const totalAmount = baseAmount + platformFee;
 
     // E. Create Booking Record
     const bookingId = crypto.randomUUID();
     await dbClient.query(
-      'INSERT INTO bookings (id, user_id, event_id, total_amount, status) VALUES (?, ?, ?, ?, ?)',
-      [bookingId, userId, eventId, totalAmount, 'confirmed']
+      'INSERT INTO bookings (id, user_id, event_id, total_amount, platform_fee, status) VALUES (?, ?, ?, ?, ?, ?)',
+      [bookingId, userId, eventId, totalAmount, platformFee, 'confirmed']
     );
 
     // F. Map Booking to Seats (Insert into booking_seats)
@@ -189,6 +191,7 @@ router.post('/book', authenticateToken, async (req, res) => {
       message: 'Booking completed successfully! Tickets have been emailed to you.',
       bookingId,
       totalAmount,
+      platformFee,
       seats: dbSeats.map(s => s.seat_number),
     });
 
@@ -212,6 +215,7 @@ router.get('/user', authenticateToken, async (req, res) => {
       SELECT 
         b.id as booking_id,
         b.total_amount,
+        b.platform_fee,
         b.created_at,
         e.title as event_title,
         e.date as event_date,
@@ -223,7 +227,7 @@ router.get('/user', authenticateToken, async (req, res) => {
       JOIN booking_seats bs ON b.id = bs.booking_id
       JOIN seats s ON bs.seat_id = s.id
       WHERE b.user_id = ?
-      GROUP BY b.id, e.title, e.date, e.venue, e.currency, b.total_amount, b.created_at
+      GROUP BY b.id, e.title, e.date, e.venue, e.currency, b.total_amount, b.platform_fee, b.created_at
       ORDER BY b.created_at DESC
     `;
     const [result] = await pool.query(query, [userId]);
