@@ -35,14 +35,6 @@ const EventList = ({ events, onSelectEvent, loading }) => {
   };
 
   filteredEvents.sort((a, b) => {
-    const pastA = getIsPast(a.date) ? 1 : 0;
-    const pastB = getIsPast(b.date) ? 1 : 0;
-    
-    // Always put past events at the end
-    if (pastA !== pastB) {
-      return pastA - pastB;
-    }
-
     if (sortOrder === 'price-asc') {
       return parseFloat(a.ticket_price) - parseFloat(b.ticket_price);
     } else if (sortOrder === 'price-desc') {
@@ -59,7 +51,13 @@ const EventList = ({ events, onSelectEvent, loading }) => {
       return soldA - soldB;
     }
     
-    // Default (none): preserve backend order which puts Featured events first
+    // Default (none): put past events at the end, then preserve backend order (Featured first)
+    const pastA = getIsPast(a.date) ? 1 : 0;
+    const pastB = getIsPast(b.date) ? 1 : 0;
+    if (pastA !== pastB) {
+      return pastA - pastB;
+    }
+    
     return 0;
   });
 
