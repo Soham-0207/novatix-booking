@@ -47,12 +47,15 @@ const EventList = ({ events, onSelectEvent, loading }) => {
       return parseFloat(a.ticket_price) - parseFloat(b.ticket_price);
     } else if (sortOrder === 'price-desc') {
       return parseFloat(b.ticket_price) - parseFloat(a.ticket_price);
-    } else {
+    } else if (sortOrder === 'popularity') {
       // Sort by popularity (most tickets sold)
       const soldA = parseInt(a.total_seats) - parseInt(a.available_seats);
       const soldB = parseInt(b.total_seats) - parseInt(b.available_seats);
       return soldB - soldA;
     }
+    
+    // Default (none): preserve backend order which puts Featured events first
+    return 0;
   });
 
   const formatDate = (dateString, timezone = 'UTC') => {
@@ -142,8 +145,9 @@ const EventList = ({ events, onSelectEvent, loading }) => {
             }}
           >
             <option value="none">Sort by</option>
-            <option value="price-asc">Price: Low to High</option>
-            <option value="price-desc">Price: High to Low</option>
+            <option value="popularity">Popularity</option>
+            <option value="price-asc">Price ↑ (Low to High)</option>
+            <option value="price-desc">Price ↓ (High to Low)</option>
           </select>
 
           {/* Search Box */}
