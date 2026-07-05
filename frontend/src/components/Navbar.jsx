@@ -132,7 +132,30 @@ const Navbar = ({ user, onLogout, setView, view, openAuthModal }) => {
             {isProfileMenuOpen && (
               <div className="mobile-menu slide-up" style={{ width: '200px', top: '120%', right: 0 }}>
                 <button
-                  onClick={() => handleLinkClick('my-bookings')}
+                  onClick={() => {
+                    handleLinkClick('profile');
+                    setIsProfileMenuOpen(false);
+                  }}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: view === 'profile' ? 'var(--primary)' : 'var(--text-main)',
+                    fontWeight: view === 'profile' ? '600' : '500',
+                    cursor: 'pointer',
+                    fontSize: '0.95rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                >
+                  <User size={18} />
+                  My Profile
+                </button>
+                <button
+                  onClick={() => {
+                    handleLinkClick('my-bookings');
+                    setIsProfileMenuOpen(false);
+                  }}
                   style={{
                     background: 'none',
                     border: 'none',
@@ -260,6 +283,23 @@ const Navbar = ({ user, onLogout, setView, view, openAuthModal }) => {
 
             {user ? (
               <>
+                <button
+                  onClick={() => handleLinkClick('profile')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: view === 'profile' ? 'var(--primary)' : 'var(--text-main)',
+                    fontWeight: view === 'profile' ? '600' : '500',
+                    cursor: 'pointer',
+                    fontSize: '0.95rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.75rem'
+                  }}
+                >
+                  <User size={18} />
+                  My Profile
+                </button>
                 <button
                   onClick={() => handleLinkClick('my-bookings')}
                   style={{

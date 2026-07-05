@@ -5,6 +5,7 @@ import SeatMap from './components/SeatMap.jsx';
 import BookingSummary from './components/BookingSummary.jsx';
 import AuthModal from './components/AuthModal.jsx';
 import UserBookings from './components/UserBookings.jsx';
+import UserProfile from './components/UserProfile.jsx';
 import ContactPage from './components/ContactPage.jsx';
 import ReviewSection from './components/ReviewSection.jsx';
 import AboutPage from './components/AboutPage.jsx';
@@ -391,6 +392,8 @@ const App = () => {
           <FooterPages view={view} />
         ) : view === 'my-bookings' ? (
           <UserBookings token={token} />
+        ) : view === 'profile' ? (
+          <UserProfile user={user} />
         ) : selectedEvent ? (
           // Seat Map / Booking View
           <div className="fade-in">
