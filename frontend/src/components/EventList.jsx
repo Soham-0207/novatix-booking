@@ -43,12 +43,19 @@ const EventList = ({ events, onSelectEvent, loading }) => {
       // Sort by popularity (most tickets sold)
       const soldA = parseInt(a.total_seats) - parseInt(a.available_seats);
       const soldB = parseInt(b.total_seats) - parseInt(b.available_seats);
-      return soldB - soldA;
+      if (soldA !== soldB) {
+        return soldB - soldA;
+      }
+      // Tie-breaker: Event with more total capacity is considered more popular
+      return parseInt(b.total_seats) - parseInt(a.total_seats);
     } else if (sortOrder === 'popularity-asc') {
       // Sort by popularity (least tickets sold)
       const soldA = parseInt(a.total_seats) - parseInt(a.available_seats);
       const soldB = parseInt(b.total_seats) - parseInt(b.available_seats);
-      return soldA - soldB;
+      if (soldA !== soldB) {
+        return soldA - soldB;
+      }
+      return parseInt(a.total_seats) - parseInt(b.total_seats);
     }
     
     // Default (none): put past events at the end, then preserve backend order (Featured first)
