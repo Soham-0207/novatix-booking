@@ -141,7 +141,7 @@ const EventList = ({ events, onSelectEvent, loading }) => {
               backgroundSize: '0.65rem auto',
             }}
           >
-            <option value="none">Sort: Default</option>
+            <option value="none">Sort by</option>
             <option value="price-asc">Price: Low to High</option>
             <option value="price-desc">Price: High to Low</option>
           </select>
