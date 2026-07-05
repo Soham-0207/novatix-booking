@@ -153,9 +153,38 @@ const CreateEvent = ({ token }) => {
           </div>
 
           <div className="form-group">
-            <label>Cover Image URL (Optional)</label>
-            <input className="form-input" type="url" name="image_url" value={formData.image_url || ''} onChange={handleChange} placeholder="https://example.com/image.jpg" />
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-dimmed)', marginTop: '0.25rem', display: 'block' }}>Leave blank to use a beautiful default image.</span>
+            <label>Cover Image (Optional)</label>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <input 
+                className="form-input" 
+                type="text" 
+                name="image_url" 
+                value={formData.image_url || ''} 
+                onChange={handleChange} 
+                placeholder="https://example.com/image.jpg or Browse local file" 
+                style={{ flex: 1 }}
+              />
+              <span style={{ color: 'var(--text-muted)' }}>OR</span>
+              <label style={{ cursor: 'pointer', background: 'var(--bg-card)', border: '1px solid var(--border)', padding: '0.5rem 1rem', borderRadius: 'var(--radius-sm)', display: 'inline-block', fontWeight: 500 }}>
+                Browse...
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  style={{ display: 'none' }} 
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setFormData(prev => ({ ...prev, image_url: reader.result }));
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }} 
+                />
+              </label>
+            </div>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-dimmed)', marginTop: '0.25rem', display: 'block' }}>Enter a URL, browse a local image, or leave blank for a default image. Note: Local images shouldn't exceed 1MB.</span>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
