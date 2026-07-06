@@ -14,6 +14,11 @@ const UserProfile = ({ user, setUser, token }) => {
 
   if (!user) return null;
 
+  const handleClosePasswordForm = () => {
+    setShowPasswordForm(false);
+    setPasswords({ current: '', new: '', confirm: '' });
+  };
+
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwords.new !== passwords.confirm) {
@@ -229,7 +234,7 @@ const UserProfile = ({ user, setUser, token }) => {
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                     <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Change Password</h3>
                     <button 
-                      onClick={() => setShowPasswordForm(false)}
+                      onClick={handleClosePasswordForm}
                       style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
                     >
                       <X size={20} />
@@ -320,7 +325,7 @@ const UserProfile = ({ user, setUser, token }) => {
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                       <button
                         type="button"
-                        onClick={() => setShowPasswordForm(false)}
+                        onClick={handleClosePasswordForm}
                         className="btn-outline"
                         style={{ flex: 1 }}
                         disabled={isChangingPassword}
