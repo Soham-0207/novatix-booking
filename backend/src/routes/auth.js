@@ -188,7 +188,7 @@ router.put('/profile', authenticateToken, async (req, res) => {
     await pool.query('UPDATE users SET name = ? WHERE id = ?', [name.trim(), userId]);
     
     // Return updated user profile
-    const [rows] = await pool.query('SELECT id, email, name, role FROM users WHERE id = ?', [userId]);
+    const [rows] = await pool.query('SELECT id, email, name FROM users WHERE id = ?', [userId]);
     res.json(rows[0]);
   } catch (err) {
     console.error('Update profile error:', err);
