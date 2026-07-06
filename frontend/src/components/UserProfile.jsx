@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, ShieldCheck, Edit2, Check, X, Loader2 } from 'lucide-react';
+import { User, Mail, ShieldCheck, Edit2, Check, X, Loader2, Eye, EyeOff } from 'lucide-react';
 
 const UserProfile = ({ user, setUser, token }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -10,6 +10,7 @@ const UserProfile = ({ user, setUser, token }) => {
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   if (!user) return null;
 
@@ -238,40 +239,82 @@ const UserProfile = ({ user, setUser, token }) => {
                   <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div>
                       <label className="form-label">Current Password</label>
-                      <input
-                        type="password"
-                        className="form-input"
-                        value={passwords.current}
-                        onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                        disabled={isChangingPassword}
-                        required
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-input"
+                          value={passwords.current}
+                          onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                          disabled={isChangingPassword}
+                          required
+                          style={{ paddingRight: '2.5rem' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)',
+                            background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
                     </div>
                     
                     <div>
                       <label className="form-label">New Password</label>
-                      <input
-                        type="password"
-                        className="form-input"
-                        value={passwords.new}
-                        onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                        disabled={isChangingPassword}
-                        required
-                        minLength={6}
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-input"
+                          value={passwords.new}
+                          onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                          disabled={isChangingPassword}
+                          required
+                          minLength={6}
+                          style={{ paddingRight: '2.5rem' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)',
+                            background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
                     </div>
                     
                     <div>
                       <label className="form-label">Confirm New Password</label>
-                      <input
-                        type="password"
-                        className="form-input"
-                        value={passwords.confirm}
-                        onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                        disabled={isChangingPassword}
-                        required
-                        minLength={6}
-                      />
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type={showPassword ? "text" : "password"}
+                          className="form-input"
+                          value={passwords.confirm}
+                          onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                          disabled={isChangingPassword}
+                          required
+                          minLength={6}
+                          style={{ paddingRight: '2.5rem' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          style={{
+                            position: 'absolute', right: '0.75rem', top: '50%', transform: 'translateY(-50%)',
+                            background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                          }}
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
                     </div>
                     
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
