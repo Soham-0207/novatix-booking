@@ -206,64 +206,97 @@ const UserProfile = ({ user, setUser, token }) => {
           <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
             <div 
               style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
-              onClick={() => setShowPasswordForm(!showPasswordForm)}
+              onClick={() => setShowPasswordForm(true)}
             >
               <h4 style={{ fontSize: '1rem', margin: 0 }}>Change Password</h4>
-              <button style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
-                {showPasswordForm ? 'Cancel' : 'Change'}
+              <button style={{ background: 'var(--primary)', color: 'black', border: 'none', padding: '0.4rem 1rem', borderRadius: 'var(--radius-md)', fontWeight: 'bold', cursor: 'pointer' }}>
+                Change
               </button>
             </div>
             
             {showPasswordForm && (
-              <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', marginTop: '1.5rem' }}>
-                <div>
-                  <label className="form-label">Current Password</label>
-                  <input
-                    type="password"
-                    className="form-input"
-                    value={passwords.current}
-                    onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                    disabled={isChangingPassword}
-                    required
-                  />
+              <div style={{ 
+                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, 
+                background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 
+              }}>
+                <div style={{ 
+                  background: 'var(--bg-card)', padding: '2rem', borderRadius: 'var(--radius-lg)', 
+                  border: '1px solid var(--border)', width: '100%', maxWidth: '400px',
+                  boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                    <h3 style={{ margin: 0, fontSize: '1.25rem' }}>Change Password</h3>
+                    <button 
+                      onClick={() => setShowPasswordForm(false)}
+                      style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}
+                    >
+                      <X size={20} />
+                    </button>
+                  </div>
+
+                  <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div>
+                      <label className="form-label">Current Password</label>
+                      <input
+                        type="password"
+                        className="form-input"
+                        value={passwords.current}
+                        onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                        disabled={isChangingPassword}
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="form-label">New Password</label>
+                      <input
+                        type="password"
+                        className="form-input"
+                        value={passwords.new}
+                        onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                        disabled={isChangingPassword}
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="form-label">Confirm New Password</label>
+                      <input
+                        type="password"
+                        className="form-input"
+                        value={passwords.confirm}
+                        onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                        disabled={isChangingPassword}
+                        required
+                        minLength={6}
+                      />
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                      <button
+                        type="button"
+                        onClick={() => setShowPasswordForm(false)}
+                        className="btn-outline"
+                        style={{ flex: 1 }}
+                        disabled={isChangingPassword}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn-primary"
+                        disabled={isChangingPassword}
+                        style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                      >
+                        {isChangingPassword && <Loader2 size={18} className="spin" />}
+                        {isChangingPassword ? 'Saving...' : 'Save'}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-                
-                <div>
-                  <label className="form-label">New Password</label>
-                  <input
-                    type="password"
-                    className="form-input"
-                    value={passwords.new}
-                    onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                    disabled={isChangingPassword}
-                    required
-                    minLength={6}
-                  />
-                </div>
-                
-                <div>
-                  <label className="form-label">Confirm New Password</label>
-                  <input
-                    type="password"
-                    className="form-input"
-                    value={passwords.confirm}
-                    onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                    disabled={isChangingPassword}
-                    required
-                    minLength={6}
-                  />
-                </div>
-                
-                <button
-                  type="submit"
-                  className="btn-primary"
-                  disabled={isChangingPassword}
-                  style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-                >
-                  {isChangingPassword && <Loader2 size={18} className="spin" />}
-                  {isChangingPassword ? 'Updating...' : 'Update Password'}
-                </button>
-              </form>
+              </div>
             )}
           </div>
         </div>
