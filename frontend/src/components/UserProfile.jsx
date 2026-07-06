@@ -5,8 +5,49 @@ const UserProfile = ({ user, setUser, token }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [nameInput, setNameInput] = useState(user?.name || '');
   const [isSaving, setIsSaving] = useState(false);
+  
+  // Password change state
+  const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   if (!user) return null;
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    if (passwords.new !== passwords.confirm) {
+      alert('New passwords do not match!');
+      return;
+    }
+
+    setIsChangingPassword(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/password`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ 
+          currentPassword: passwords.current,
+          newPassword: passwords.new
+        })
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        alert('Password updated successfully!');
+        setPasswords({ current: '', new: '', confirm: '' });
+      } else {
+        alert(data.error || 'Failed to update password');
+      }
+    } catch (err) {
+      console.error('Error changing password:', err);
+      alert('Network error while updating password');
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
 
   const handleSave = async () => {
     if (!nameInput.trim() || nameInput.trim() === user.name) {
@@ -148,6 +189,70 @@ const UserProfile = ({ user, setUser, token }) => {
                 {user.email}
               </div>
             </div>
+          </div>
+        </div>
+
+        <div style={{ borderTop: '1px solid var(--border)' }} />
+
+        {/* Change Password */}
+        <div>
+          <h3 style={{ fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <ShieldCheck size={20} className="gradient-text" />
+            Security
+          </h3>
+          
+          <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+            <h4 style={{ fontSize: '1rem', marginBottom: '1rem' }}>Change Password</h4>
+            
+            <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
+              <div>
+                <label className="form-label">Current Password</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={passwords.current}
+                  onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                  disabled={isChangingPassword}
+                  required
+                />
+              </div>
+              
+              <div>
+                <label className="form-label">New Password</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={passwords.new}
+                  onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                  disabled={isChangingPassword}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <div>
+                <label className="form-label">Confirm New Password</label>
+                <input
+                  type="password"
+                  className="form-input"
+                  value={passwords.confirm}
+                  onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                  disabled={isChangingPassword}
+                  required
+                  minLength={6}
+                />
+              </div>
+              
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={isChangingPassword}
+                style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+              >
+                {isChangingPassword && <Loader2 size={18} className="spin" />}
+                {isChangingPassword ? 'Updating...' : 'Update Password'}
+              </button>
+            </form>
           </div>
         </div>
 
