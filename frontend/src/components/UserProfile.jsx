@@ -9,6 +9,7 @@ const UserProfile = ({ user, setUser, token }) => {
   // Password change state
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
   if (!user) return null;
 
@@ -38,6 +39,7 @@ const UserProfile = ({ user, setUser, token }) => {
       if (response.ok) {
         alert('Password updated successfully!');
         setPasswords({ current: '', new: '', confirm: '' });
+        setShowPasswordForm(false);
       } else {
         alert(data.error || 'Failed to update password');
       }
@@ -202,57 +204,67 @@ const UserProfile = ({ user, setUser, token }) => {
           </h3>
           
           <div style={{ background: 'rgba(255,255,255,0.03)', padding: '1.5rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
-            <h4 style={{ fontSize: '1rem', marginBottom: '1rem' }}>Change Password</h4>
-            
-            <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px' }}>
-              <div>
-                <label className="form-label">Current Password</label>
-                <input
-                  type="password"
-                  className="form-input"
-                  value={passwords.current}
-                  onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                  disabled={isChangingPassword}
-                  required
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">New Password</label>
-                <input
-                  type="password"
-                  className="form-input"
-                  value={passwords.new}
-                  onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                  disabled={isChangingPassword}
-                  required
-                  minLength={6}
-                />
-              </div>
-              
-              <div>
-                <label className="form-label">Confirm New Password</label>
-                <input
-                  type="password"
-                  className="form-input"
-                  value={passwords.confirm}
-                  onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                  disabled={isChangingPassword}
-                  required
-                  minLength={6}
-                />
-              </div>
-              
-              <button
-                type="submit"
-                className="btn-primary"
-                disabled={isChangingPassword}
-                style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
-              >
-                {isChangingPassword && <Loader2 size={18} className="spin" />}
-                {isChangingPassword ? 'Updating...' : 'Update Password'}
+            <div 
+              style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+              onClick={() => setShowPasswordForm(!showPasswordForm)}
+            >
+              <h4 style={{ fontSize: '1rem', margin: 0 }}>Change Password</h4>
+              <button style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}>
+                {showPasswordForm ? 'Cancel' : 'Change'}
               </button>
-            </form>
+            </div>
+            
+            {showPasswordForm && (
+              <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '400px', marginTop: '1.5rem' }}>
+                <div>
+                  <label className="form-label">Current Password</label>
+                  <input
+                    type="password"
+                    className="form-input"
+                    value={passwords.current}
+                    onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                    disabled={isChangingPassword}
+                    required
+                  />
+                </div>
+                
+                <div>
+                  <label className="form-label">New Password</label>
+                  <input
+                    type="password"
+                    className="form-input"
+                    value={passwords.new}
+                    onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                    disabled={isChangingPassword}
+                    required
+                    minLength={6}
+                  />
+                </div>
+                
+                <div>
+                  <label className="form-label">Confirm New Password</label>
+                  <input
+                    type="password"
+                    className="form-input"
+                    value={passwords.confirm}
+                    onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                    disabled={isChangingPassword}
+                    required
+                    minLength={6}
+                  />
+                </div>
+                
+                <button
+                  type="submit"
+                  className="btn-primary"
+                  disabled={isChangingPassword}
+                  style={{ marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+                >
+                  {isChangingPassword && <Loader2 size={18} className="spin" />}
+                  {isChangingPassword ? 'Updating...' : 'Update Password'}
+                </button>
+              </form>
+            )}
           </div>
         </div>
 
