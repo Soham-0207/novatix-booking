@@ -1,8 +1,46 @@
-import React from 'react';
-import { User, Mail, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, Mail, ShieldCheck, Edit2, Check, X, Loader2 } from 'lucide-react';
 
-const UserProfile = ({ user }) => {
+const UserProfile = ({ user, setUser, token }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [nameInput, setNameInput] = useState(user?.name || '');
+  const [isSaving, setIsSaving] = useState(false);
+
   if (!user) return null;
+
+  const handleSave = async () => {
+    if (!nameInput.trim() || nameInput.trim() === user.name) {
+      setIsEditing(false);
+      setNameInput(user.name);
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/auth/profile`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ name: nameInput.trim() })
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUser(updatedUser);
+        setIsEditing(false);
+      } else {
+        const data = await response.json();
+        alert(data.error || 'Failed to update profile');
+      }
+    } catch (err) {
+      console.error('Error updating profile:', err);
+      alert('Network error while updating profile');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '1rem' }}>
@@ -26,12 +64,54 @@ const UserProfile = ({ user }) => {
             color: 'black',
             fontSize: '2rem',
             fontWeight: 'bold',
-            textTransform: 'uppercase'
+            textTransform: 'uppercase',
+            flexShrink: 0
           }}>
             {user.name.charAt(0)}
           </div>
-          <div>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{user.name}</h2>
+          <div style={{ flex: 1 }}>
+            {isEditing ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                <input
+                  type="text"
+                  className="form-input"
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  style={{ width: '250px', padding: '0.4rem 0.75rem' }}
+                  autoFocus
+                  onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+                  disabled={isSaving}
+                />
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  style={{ background: 'var(--primary)', color: 'black', border: 'none', padding: '0.4rem', borderRadius: '4px', cursor: isSaving ? 'not-allowed' : 'pointer' }}
+                >
+                  {isSaving ? <Loader2 size={18} className="spin" /> : <Check size={18} />}
+                </button>
+                <button
+                  onClick={() => {
+                    setIsEditing(false);
+                    setNameInput(user.name);
+                  }}
+                  disabled={isSaving}
+                  style={{ background: 'var(--bg-card)', color: 'var(--text-main)', border: '1px solid var(--border)', padding: '0.4rem', borderRadius: '4px', cursor: 'pointer' }}
+                >
+                  <X size={18} />
+                </button>
+              </div>
+            ) : (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.25rem' }}>
+                <h2 style={{ fontSize: '1.5rem', margin: 0 }}>{user.name}</h2>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                  title="Edit Name"
+                >
+                  <Edit2 size={16} />
+                </button>
+              </div>
+            )}
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)' }}>
               <Mail size={16} />
               <span>{user.email}</span>

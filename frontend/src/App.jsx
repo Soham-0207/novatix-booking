@@ -393,7 +393,7 @@ const App = () => {
         ) : view === 'my-bookings' ? (
           <UserBookings token={token} />
         ) : view === 'profile' ? (
-          <UserProfile user={user} />
+          <UserProfile user={user} setUser={setUser} token={token} />
         ) : selectedEvent ? (
           // Seat Map / Booking View
           <div className="fade-in">

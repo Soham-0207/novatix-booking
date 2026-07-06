@@ -176,5 +176,24 @@ router.post('/reset-password', async (req, res) => {
     res.status(500).json({ error: 'Server error resetting password.' });
   }
 });
+// Update user profile (name)
+router.put('/profile', authenticateToken, async (req, res) => {
+  const { name } = req.body;
+  if (!name || name.trim().length === 0) {
+    return res.status(400).json({ error: 'Name is required' });
+  }
+
+  try {
+    const userId = req.user.id;
+    await pool.query('UPDATE users SET name = ? WHERE id = ?', [name.trim(), userId]);
+    
+    // Return updated user profile
+    const [rows] = await pool.query('SELECT id, email, name, role FROM users WHERE id = ?', [userId]);
+    res.json(rows[0]);
+  } catch (err) {
+    console.error('Update profile error:', err);
+    res.status(500).json({ error: 'Server error updating profile' });
+  }
+});
 
 export default router;
