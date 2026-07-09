@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Mail, ShieldCheck, Edit2, Check, X, Loader2, Eye, EyeOff } from 'lucide-react';
+import { User, Mail, ShieldCheck, Edit2, Check, X, Loader2, Eye, EyeOff, Shield, ShieldAlert } from 'lucide-react';
 
 const UserProfile = ({ user, setUser, token }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -19,10 +19,31 @@ const UserProfile = ({ user, setUser, token }) => {
     setPasswords({ current: '', new: '', confirm: '' });
   };
 
+  const getPasswordStrength = (password) => {
+    if (!password) return '';
+    if (password.length < 6) return 'Low';
+    let score = 0;
+    if (password.length >= 8) score += 1;
+    if (/[A-Z]/.test(password)) score += 1;
+    if (/[0-9]/.test(password)) score += 1;
+    if (/[^A-Za-z0-9]/.test(password)) score += 1;
+    
+    if (score <= 1) return 'Low';
+    if (score === 2) return 'Medium';
+    return 'High';
+  };
+
+  const strength = getPasswordStrength(passwords.new);
+
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwords.new !== passwords.confirm) {
       alert('New passwords do not match!');
+      return;
+    }
+
+    if (strength === 'Low') {
+      alert('Password is too weak. Please use a stronger password (Medium or High).');
       return;
     }
 
@@ -293,6 +314,14 @@ const UserProfile = ({ user, setUser, token }) => {
                           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
                       </div>
+                      
+                      {/* Password Strength Indicator */}
+                      {passwords.new && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem', marginTop: '0.5rem', color: strength === 'Low' ? 'var(--color-booked)' : strength === 'Medium' ? 'var(--color-selected)' : 'var(--color-available)' }}>
+                          {strength === 'Low' ? <ShieldAlert size={14} /> : strength === 'Medium' ? <Shield size={14} /> : <ShieldCheck size={14} />}
+                          <span>Password Strength: <strong>{strength}</strong></span>
+                        </div>
+                      )}
                     </div>
                     
                     <div>
