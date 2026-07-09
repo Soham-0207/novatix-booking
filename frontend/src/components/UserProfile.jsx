@@ -11,12 +11,16 @@ const UserProfile = ({ user, setUser, token }) => {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
 
   if (!user) return null;
 
   const handleClosePasswordForm = () => {
     setShowPasswordForm(false);
     setPasswords({ current: '', new: '', confirm: '' });
+    setPasswordError('');
+    setPasswordSuccess('');
   };
 
   const getPasswordStrength = (password) => {
@@ -37,13 +41,16 @@ const UserProfile = ({ user, setUser, token }) => {
 
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+    
     if (passwords.new !== passwords.confirm) {
-      alert('New passwords do not match!');
+      setPasswordError('New passwords do not match!');
       return;
     }
 
     if (strength === 'Low') {
-      alert('Password is too weak. Please use a stronger password (Medium or High).');
+      setPasswordError('Password is too weak. Please use a stronger password (Medium or High).');
       return;
     }
 
@@ -64,15 +71,19 @@ const UserProfile = ({ user, setUser, token }) => {
       const data = await response.json();
       
       if (response.ok) {
-        alert('Password updated successfully!');
+        setPasswordSuccess('Password updated successfully!');
         setPasswords({ current: '', new: '', confirm: '' });
-        setShowPasswordForm(false);
+        // Optionally close form after a delay
+        setTimeout(() => {
+          setShowPasswordForm(false);
+          setPasswordSuccess('');
+        }, 2000);
       } else {
-        alert(data.error || 'Failed to update password');
+        setPasswordError(data.error || 'Failed to update password');
       }
     } catch (err) {
       console.error('Error changing password:', err);
-      alert('Network error while updating password');
+      setPasswordError('Network error while updating password');
     } finally {
       setIsChangingPassword(false);
     }
@@ -261,6 +272,36 @@ const UserProfile = ({ user, setUser, token }) => {
                       <X size={20} />
                     </button>
                   </div>
+
+                  {passwordError && (
+                    <div style={{
+                      backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                      border: '1px solid var(--color-booked)',
+                      color: 'var(--text-main)',
+                      padding: '0.75rem',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.85rem',
+                      marginBottom: '1.5rem',
+                      textAlign: 'center',
+                    }}>
+                      {passwordError}
+                    </div>
+                  )}
+
+                  {passwordSuccess && (
+                    <div style={{
+                      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                      border: '1px solid var(--color-available)',
+                      color: 'var(--text-main)',
+                      padding: '0.75rem',
+                      borderRadius: 'var(--radius-sm)',
+                      fontSize: '0.85rem',
+                      marginBottom: '1.5rem',
+                      textAlign: 'center',
+                    }}>
+                      {passwordSuccess}
+                    </div>
+                  )}
 
                   <form onSubmit={handlePasswordSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     <div>
