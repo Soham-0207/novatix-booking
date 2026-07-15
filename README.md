@@ -10,7 +10,7 @@
   [![MySQL](https://img.shields.io/badge/MySQL-8.x-blue?style=for-the-badge&logo=mysql)](https://www.mysql.com/)
   [![Redis](https://img.shields.io/badge/Redis-Cache-red?style=for-the-badge&logo=redis)](https://redis.io/)
   
-  [Explore Live App](#) · [Report Bug](#) · [Request Feature](#)
+  [Explore Live App](https://novatix-booking.vercel.app) · [Report Bug](#) · [Request Feature](#)
 </div>
 
 ---
