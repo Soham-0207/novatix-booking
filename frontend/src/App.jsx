@@ -107,7 +107,7 @@ const App = () => {
           setUser(profile);
         } else {
           // Token expired or invalid
-          handleLogout();
+          handleLogout(true);
         }
       } catch (err) {
         console.error('Profile fetch error:', err);
@@ -223,14 +223,16 @@ const App = () => {
     showToast(`Welcome back, ${userData.name}!`, 'success');
   };
 
-  const handleLogout = () => {
+  const handleLogout = (silent = false) => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
     setView('events');
     resetBookingState();
     window.history.pushState({ view: 'events' }, '', '/');
-    showToast('Signed out successfully.', 'info');
+    if (!silent) {
+      showToast('Signed out successfully.', 'info');
+    }
   };
 
   // Seat toggle selection
